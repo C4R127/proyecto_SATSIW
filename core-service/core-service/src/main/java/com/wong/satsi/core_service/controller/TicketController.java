@@ -6,6 +6,7 @@ import com.wong.satsi.core_service.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +19,13 @@ public class TicketController {
     private final TicketService ticketService;
 
     // Endpoint para crear un nuevo ticket
+    // Importa org.springframework.security.core.Authentication;
     @PostMapping
-    public ResponseEntity<Ticket> crearTicket(@RequestBody TicketRequestDTO dto) {
-        Ticket nuevoTicket = ticketService.crearTicket(dto);
+    public ResponseEntity<Ticket> crearTicket(@RequestBody TicketRequestDTO dto, Authentication authentication) {
+        // Extraemos el username del token validado por el filtro
+        String username = authentication.getName();
+
+        Ticket nuevoTicket = ticketService.crearTicket(dto, username);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoTicket);
     }
 

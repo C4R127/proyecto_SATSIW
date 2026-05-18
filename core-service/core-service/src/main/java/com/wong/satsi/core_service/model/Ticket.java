@@ -27,9 +27,8 @@ public class Ticket {
     @Column(nullable = false, length = 30)
     private String estado; // Ej: "ABIERTO", "EN_PROGRESO", "CERRADO"
 
-    // Guardamos el ID numérico del usuario que viene desde el iam-service
-    @Column(name = "usuario_id", nullable = false)
-    private Long usuarioId;
+    @Column(name = "usuario_username", nullable = false, length = 50)
+    private String usuarioUsername;
 
     @Column(name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion;

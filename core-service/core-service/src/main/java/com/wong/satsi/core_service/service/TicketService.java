@@ -14,13 +14,11 @@ public class TicketService {
 
     private final TicketRepository ticketRepository;
 
-    public Ticket crearTicket(TicketRequestDTO dto) {
+    public Ticket crearTicket(TicketRequestDTO dto, String username) {
         Ticket nuevoTicket = new Ticket();
         nuevoTicket.setTitulo(dto.getTitulo());
         nuevoTicket.setDescripcion(dto.getDescripcion());
-        nuevoTicket.setUsuarioId(dto.getUsuarioId());
-
-        // El estado ("ABIERTO") y la fecha se asignan solos gracias al @PrePersist que configuraste antes
+        nuevoTicket.setUsuarioUsername(username); // Asignamos el usuario autenticado de forma segura
 
         return ticketRepository.save(nuevoTicket);
     }
