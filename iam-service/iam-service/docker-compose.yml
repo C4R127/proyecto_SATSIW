@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  postgres-iam:
+    image: postgres:15-alpine
+    container_name: satsi_iam_db_container
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 12358c
+      POSTGRES_DB: satsi_iam_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_iam_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_iam_data:
