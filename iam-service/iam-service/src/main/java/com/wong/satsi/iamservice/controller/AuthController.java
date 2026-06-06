@@ -24,7 +24,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    // Endpoint 1: Registro (El que ya probaste)
+    // Endpoint 1: Registro
     @PostMapping("/registro")
     public ResponseEntity<?> registrarUsuario(@RequestBody RegistroUsuarioDTO dto) {
         try {
@@ -40,28 +40,34 @@ public class AuthController {
         }
     }
 
-    // Endpoint 2: ¡NUEVO! Login y generación de Token
+    // Endpoint 2: Login Inteligente (Soporta Username o Correo)
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO dto) {
 
-        // 1. Buscar si el usuario existe en la base de datos
+        // 1. Primero intentamos buscar por Username
         Optional<Usuario> usuarioOpt = usuarioRepository.findByUsername(dto.getUsername());
 
+        // 2. NUEVO: Si no lo encuentra por Username, intentamos buscarlo por Email
         if (usuarioOpt.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: Usuario no encontrado.");
+            usuarioOpt = usuarioRepository.findByEmail(dto.getUsername());
+        }
+
+        // 3. Si definitivamente no existe bajo ninguno de los dos métodos, bloqueamos el paso
+        if (usuarioOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: Usuario o correo no encontrado.");
         }
 
         Usuario usuario = usuarioOpt.get();
 
-        // 2. Verificar que la contraseña ingresada coincida con la encriptada con Argon2
+        // 4. Verificar que la contraseña ingresada coincida con la encriptada con Argon2
         if (!passwordEncoder.matches(dto.getPassword(), usuario.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: Contraseña incorrecta.");
         }
 
-        // 3. Si todo está correcto, ordenamos a JwtUtil fabricar el Pase VIP
+        // 5. Si todo está correcto, ordenamos a JwtUtil fabricar el Pase VIP
         String token = jwtUtil.generarToken(usuario.getUsername(), usuario.getRol().getNombre());
 
-        // 4. Devolvemos el token al cliente
+        // 6. Devolvemos el token al cliente
         return ResponseEntity.ok(token);
     }
 }

@@ -6,4 +6,7 @@ import lombok.Data;
 public class TicketRequestDTO {
     private String titulo;
     private String descripcion;
+    private Long equipoId;
+    private String prioridad;
+    private Long sucursalId;
 }

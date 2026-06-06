@@ -12,6 +12,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     // Necesitaremos esto para el login:
     Optional<Usuario> findByUsername(String username);
 
+    Optional<Usuario> findByEmail(String email);
+
     // Necesitaremos esto para validar que no se repitan correos al registrar:
     boolean existsByEmail(String email);
 

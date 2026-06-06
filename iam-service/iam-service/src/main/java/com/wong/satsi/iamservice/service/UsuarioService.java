@@ -37,4 +37,7 @@ public class UsuarioService {
 
         return usuarioRepository.save(nuevoUsuario);
     }
+    public java.util.List<Usuario> obtenerTodosLosUsuarios() {
+        return usuarioRepository.findAll();
+    }
 }

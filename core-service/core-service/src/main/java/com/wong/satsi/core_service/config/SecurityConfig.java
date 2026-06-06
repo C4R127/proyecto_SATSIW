@@ -4,6 +4,7 @@ import com.wong.satsi.core_service.security.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,15 +21,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // Le decimos a Spring Security que ignore el CORS, el API Gateway (8080) se encarga.
+                .cors(cors -> cors.disable())
+
                 .csrf(csrf -> csrf.disable())
-                // Como usamos microservicios y JWT, no guardamos sesiones en memoria
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // ¡LA REGLA DE ORO! Cualquier petición a este microservicio DEBE estar autenticada
+                        // Solo dejamos pasar las preguntas de OPTIONS y las imágenes
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/tickets/evidencia/**").permitAll()
                         .anyRequest().authenticated()
                 );
 
-        // Ponemos a nuestro guardia a revisar las peticiones antes de que entren
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

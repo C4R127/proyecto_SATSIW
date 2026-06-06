@@ -1,0 +1,28 @@
+package com.wong.satsi.core_service.controller;
+
+import com.wong.satsi.core_service.model.Equipo;
+import com.wong.satsi.core_service.service.EquipoService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/equipos")
+@RequiredArgsConstructor
+public class EquipoController {
+
+    private final EquipoService equipoService;
+
+    @GetMapping
+    public ResponseEntity<List<Equipo>> listarEquipos() {
+        return ResponseEntity.ok(equipoService.obtenerTodosLosEquipos());
+    }
+
+    /*
+    @PostMapping
+    public ResponseEntity<Equipo> crearEquipo(@RequestBody Equipo equipo) {
+        return ResponseEntity.ok(equipoService.guardarEquipo(equipo));
+    }*/
+}

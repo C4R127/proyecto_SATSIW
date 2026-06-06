@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tickets")
@@ -24,14 +26,37 @@ public class Ticket {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String descripcion;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "equipo_id", nullable = false)
+    private Equipo equipo;
+
+    @Column(nullable = false, length = 20)
+    private String prioridad;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sucursal_id", nullable = false)
+    private Sucursal sucursal;
+
     @Column(nullable = false, length = 30)
     private String estado; // Ej: "ABIERTO", "EN_PROGRESO", "CERRADO"
 
     @Column(name = "usuario_username", nullable = false, length = 50)
     private String usuarioUsername;
 
+    @Column(name = "tecnico_asignado")
+    private String tecnicoAsignado;
+
     @Column(name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion;
+
+    @Column(name = "alerta_vencimiento_enviada")
+    private Boolean alertaVencimientoEnviada = false;
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<TicketTimeline> timeline = new ArrayList<>();
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Adjunto> adjuntos = new ArrayList<>();
 
     // Esto se ejecuta automáticamente justo antes de guardar en la base de datos
     @PrePersist

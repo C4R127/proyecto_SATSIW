@@ -1,0 +1,237 @@
+Diseña una aplicación web empresarial moderna llamada SATSIWM (Sistema de 
+Atención de Tickets para Soporte de Incidencias para Wong), orientada a mejorar 
+la gestión interna de soporte técnico de las tiendas Wong (Cencosud).
+
+---
+
+🎨 DESIGN SYSTEM (Crear este frame primero):
+- Paleta de colores:
+  - Primario: #D32F2F (rojo Wong)
+  - Primario oscuro: #B71C1C
+  - Fondo general: #F5F5F5
+  - Superficie/Card: #FFFFFF
+  - Texto principal: #212121
+  - Texto secundario: #757575
+  - Borde/Divider: #E0E0E0
+
+- Chips de prioridad (pill shape):
+  - Baja: fondo #E8F5E9, texto #2E7D32 (verde)
+  - Media: fondo #FFF8E1, texto #F57F17 (amarillo)
+  - Alta: fondo #FFF3E0, texto #E65100 (naranja)
+  - Crítica: fondo #FFEBEE, texto #C62828 (rojo)
+
+- Badges de estado de ticket (pill shape):
+  - Abierto: fondo #E3F2FD, texto #1565C0 (azul)
+  - En Progreso: fondo #FFF8E1, texto #F57F17 (amarillo)
+  - Resuelto: fondo #E8F5E9, texto #2E7D32 (verde)
+  - Cerrado: fondo #F5F5F5, texto #616161 (gris)
+
+- Escala tipográfica (fuente: Inter o Roboto):
+  - H1: 32px Bold
+  - H2: 24px SemiBold
+  - H3: 18px SemiBold
+  - Body: 14px Regular
+  - Caption: 12px Regular
+
+- Estados de botón primario (#D32F2F):
+  - Default: fondo rojo, texto blanco
+  - Hover: fondo #B71C1C
+  - Disabled: fondo #BDBDBD, texto #FFFFFF
+
+- Botón secundario:
+  - Default: fondo blanco, borde #D32F2F, texto #D32F2F
+  - Hover: fondo #FFEBEE
+
+- Iconografía: Material Icons (outlined)
+- Bordes redondeados: 6px para inputs y cards, 20px para chips/badges
+- Sombra de cards: 0px 2px 8px rgba(0,0,0,0.08)
+- Espaciado base: múltiplos de 8px
+
+---
+
+📐 ESPECIFICACIONES DE LAYOUT GLOBAL:
+- Viewport: 1440px de ancho
+- Grid: 12 columnas, gutter 24px, márgenes laterales 80px
+- Sidebar fijo: 240px de ancho, fondo blanco, borde derecho #E0E0E0
+  Contenido del sidebar:
+  - Logo SATSIWM + ícono Wong en la parte superior (padding 24px)
+  - Items de navegación con ícono (Material Icons) + etiqueta de texto:
+    · Dashboard
+    · Mis Tickets
+    · Tablero Kanban
+    · Reportes
+    · Configuración
+  - Item activo: fondo #FFEBEE, texto #D32F2F, borde izquierdo 3px sólido #D32F2F
+  - Sección inferior del sidebar: avatar del usuario + nombre + rol + ícono de cerrar sesión
+- Header superior: altura 64px, fondo blanco, sombra suave
+  Contenido del header:
+  - Título de la sección actual (H2)
+  - Barra de búsqueda global (centro)
+  - Ícono de notificaciones con badge numérico + avatar del usuario (derecha)
+
+---
+
+📱 PANTALLAS A DISEÑAR:
+
+---
+
+1. 🔐 LOGIN SEGURO
+Contexto: Pantalla de entrada para dos tipos de usuario — personal de tienda 
+(no técnico, usa la pantalla rápido) y técnicos de soporte. Debe sentirse 
+simple, confiable y corporativa.
+
+- Fondo: #F5F5F5 con patrón sutil o degradado muy leve
+- Card centrado: 480px ancho, fondo blanco, sombra suave, borde redondeado 8px
+- Dentro del card (padding 40px):
+  · Logo SATSIWM arriba (con logo de Wong/Cencosud debajo, más pequeño)
+  · Título: "Bienvenido" (H1) + subtítulo: "Inicia sesión para continuar" (body, gris)
+  · Selector de rol — dos tabs tipo pill de ancho completo:
+    "Personal de Tienda" | "Técnico de Soporte"
+    (activo: fondo #D32F2F, texto blanco; inactivo: borde #E0E0E0, texto #757575)
+  · Input de email con ícono "mail_outline" a la izquierda
+  · Input de contraseña con ícono "lock_outline" + ícono de mostrar/ocultar a la derecha
+  · Botón primario full-width: "Iniciar Sesión"
+  · Link secundario centrado: "¿Olvidaste tu contraseña?"
+  · Separador + texto "Soporte IT: soporte@wong.com.pe" al pie del card
+
+- Mostrar también estado de ERROR:
+  · Borde rojo (#D32F2F) en inputs inválidos
+  · Mensaje de error debajo del input: ícono "error_outline" + texto en rojo
+
+---
+
+2. 📋 PORTAL DE CREACIÓN DE TICKETS (Vista Personal de Tienda)
+Contexto: El usuario es personal de caja o tienda, sin conocimientos técnicos. 
+Está reportando un problema urgente (ej: caja caída). La interfaz debe ser 
+extremadamente simple, con pasos claros y sin distracciones.
+
+- Usar layout global (sidebar + header)
+- Área de contenido: card centrado de 720px con formulario limpio
+- Título del card: "Reportar Nueva Incidencia" (H2) + subtítulo descriptivo
+- Campos del formulario:
+  · Título del problema (input text) — placeholder: "Ej: Caja N°3 no enciende"
+  · Descripción detallada (textarea, 4 líneas) — placeholder: "Describe el problema..."
+  · Categoría (dropdown con íconos Material Icons por categoría):
+    - 🖥 Hardware de Caja
+    - 🌐 Redes / Conectividad
+    - 💳 Terminal POS
+    - 💿 Software / Sistema
+    - 📦 Otros
+  · Prioridad — 4 chips seleccionables en fila: Baja | Media | Alta | Crítica
+    (al seleccionar, aplica color del chip correspondiente del Design System)
+  · Tienda/Sucursal (campo pre-completado automáticamente, solo lectura, ícono "store")
+- Botón CTA full-width: "Crear Ticket" (primario)
+- Botón secundario: "Cancelar"
+
+- Mostrar también estado POST-ENVÍO (success state):
+  · Ícono de check animado (círculo verde con ✓)
+  · Mensaje: "¡Ticket creado exitosamente!"
+  · Subtexto: "Tu ticket #TK-2041 fue registrado. Un técnico lo atenderá pronto."
+  · Botón: "Crear otro ticket"
+
+---
+
+3. 📊 TABLERO KANBAN (Vista Técnico de Soporte)
+Contexto: El técnico revisa y gestiona sus tickets asignados. Necesita ver 
+de un vistazo qué es urgente y cuánto tiempo le queda según el SLA.
+
+- Usar layout global (sidebar + header)
+- Header de la sección incluye: título "Mi Tablero" + botón secundario "Filtrar" 
+  con ícono "filter_list" + contador total de tickets activos
+- Tres columnas de igual ancho con encabezado:
+  · "Por Hacer" — badge con número de tickets, color azul
+  · "En Progreso" — badge con número de tickets, color amarillo  
+  · "Resuelto" — badge con número de tickets, color verde
+- Cada tarjeta de ticket contiene:
+  · Chip de prioridad (color-coded según Design System) en la esquina superior derecha
+  · Título del ticket (H3, máx 2 líneas)
+  · Categoría con ícono (caption, gris)
+  · Nombre de la tienda origen (caption, gris, ícono "store")
+  · Separador
+  · Fila inferior: avatar del creador + nombre | badge de tiempo SLA restante:
+    - SLA OK (>4h): fondo verde claro, texto verde — "6h restantes"
+    - SLA RIESGO (1-4h): fondo naranja claro, texto naranja — "2h restantes"  
+    - SLA VENCIDO: fondo rojo claro, texto rojo — "Vencido"
+- Mostrar al menos 3 tarjetas por columna con datos de ejemplo variados
+- Una tarjeta en "En Progreso" debe mostrarse en estado hover 
+  (sombra más pronunciada, borde izquierdo rojo) para simular selección
+- Empty state para columna vacía: ícono + texto "No hay tickets aquí"
+
+---
+
+4. 🔍 DETALLE DE TICKET
+Contexto: Vista completa de un ticket específico. El técnico revisa el 
+historial y agrega comentarios de avance.
+
+- Usar layout global (sidebar + header)
+- Header de sección: breadcrumb "Mis Tickets > #TK-2038" + botones de acción 
+  (Cambiar Estado — dropdown, Reasignar — secundario)
+- Layout de dos columnas (60% / 40%):
+
+  COLUMNA IZQUIERDA — Información del ticket:
+  · Card superior con:
+    - Título del ticket (H2)
+    - Fila de metadata: chip de estado + chip de prioridad + categoría con ícono
+    - Sección "Descripción" con el texto del problema
+    - Grid de datos: Creado por | Técnico asignado | Fecha creación | Fecha vencimiento SLA
+  · Card inferior: campo de texto "Agregar comentario..." (textarea) 
+    + botón "Publicar Comentario" (primario, alineado a la derecha)
+
+  COLUMNA DERECHA — Timeline de historial:
+  · Título "Historial de Actividad" (H3)
+  · Timeline vertical con línea conectora y puntos de evento:
+    - Evento 1 (ícono "add_circle", azul): "Ticket creado por María López" — 01 Abr, 09:15
+    - Evento 2 (ícono "person", naranja): "Asignado a Carlos Moron" — 01 Abr, 09:20
+    - Evento 3 (ícono "chat_bubble", gris): Comentario con texto de ejemplo — 01 Abr, 11:30
+    - Evento 4 (ícono "swap_horiz", amarillo): "Estado: Abierto → En Progreso" — 01 Abr, 11:31
+    - Evento 5 (ícono "check_circle", verde): "Estado: En Progreso → Resuelto" — 01 Abr, 14:00
+
+---
+
+5. 📈 DASHBOARD ANALÍTICO (Vista Gerencial / Jefe TI)
+Contexto: Vista ejecutiva para el Jefe de TI de Wong. Necesita ver el 
+estado global del soporte de un vistazo, sin necesidad de explorar detalles.
+
+- Usar layout global (sidebar + header)
+- Saludo personalizado en header: "Buenos días, Hans — Resumen operativo de hoy"
+- Fila 1 — 4 KPI Cards (ancho igual, con ícono Material Icons + valor grande + tendencia):
+  · "Tickets Abiertos Hoy" — valor: 38 — ícono: "confirmation_number" (azul)
+  · "Tickets Críticos Activos" — valor: 12 — ícono: "warning" (rojo) + flecha tendencia ↑
+  · "% Cumplimiento SLA" — valor: 87% — ícono: "verified" (verde) + barra de progreso
+  · "Resueltos Esta Semana" — valor: 43 — ícono: "task_alt" (verde)
+
+- Fila 2 — Dos gráficos (50% / 50%):
+  · Gráfico de barras verticales: "Incidencias por Categoría"
+    Datos: Hardware de Caja (18), Redes (12), POS (9), Software (7), Otros (4)
+    Barras en degradado rojo, eje X con etiquetas, eje Y numérico
+  · Gráfico donut: "Estado General de Tickets"
+    Segmentos: Abiertos (35%), En Progreso (25%), Resueltos (30%), Cerrados (10%)
+    Colores según Design System de estados + leyenda al lado derecho
+
+- Fila 3 — Tabla: "Tickets Críticos Recientes" (últimas 5 entradas)
+  Columnas: ID | Título | Tienda | Técnico Asignado | SLA | Estado
+  Alternar fondo de filas (blanco / #FAFAFA) + chip de estado en última columna
+
+---
+
+⚙️ ESTADOS ADICIONALES (incluir como frames separados):
+
+- Skeleton Loader: mostrar versión de la pantalla del Kanban con placeholders 
+  grises animados (rectangulos redondeados) en lugar del contenido real
+
+- Empty State global: ilustración simple + título "Sin resultados" + 
+  subtexto + botón de acción primario
+
+- Notificación Toast: componente flotante en esquina inferior derecha:
+  · Éxito: borde izquierdo verde + ícono check + mensaje
+  · Error: borde izquierdo rojo + ícono error + mensaje
+  · Info: borde izquierdo azul + ícono info + mensaje
+
+---
+
+📌 NOTAS FINALES PARA LA IA:
+- Mantener consistencia visual absoluta entre todas las pantallas
+- Usar siempre el sidebar y header definidos (excepto en Login)
+- No incluir interacciones reales, solo simular estados con frames estáticos
+- Priorizar claridad y jerarquía visual sobre decoración excesiva
+- Todos los textos deben estar en español

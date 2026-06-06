@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import org.springframework.http.HttpMethod;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor // Necesario para inyectar el filtro
@@ -27,15 +29,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // 1. Apagamos el CORS interno (El Gateway hará este trabajo)
+                .cors(cors -> cors.disable())
+
                 .csrf(csrf -> csrf.disable())
-                // Le decimos a Spring que no guarde sesiones en memoria (porque usaremos tokens)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Login y Registro son públicos
-                        .anyRequest().authenticated() // CUALQUIER otra URL requerirá el Token JWT
+                        // 2. Dejamos pasar las peticiones invisibles de React (Preflight)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+
+                        // 3. Tus reglas actuales
+                        .requestMatchers("/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 );
 
-        // Colocamos a nuestro Guardia (JwtRequestFilter) en la puerta principal
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
