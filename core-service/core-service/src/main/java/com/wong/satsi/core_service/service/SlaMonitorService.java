@@ -50,6 +50,7 @@ public class SlaMonitorService {
                 // NUEVO: Verificamos que no se haya enviado la alerta previamente
                 if (minutosRestantes < 0 && !Boolean.TRUE.equals(ticket.getAlertaVencimientoEnviada())) {
                     log.error("🚨 [SLA VENCIDO] El Ticket #{} superó su tiempo límite.", ticket.getId());
+
                     try {
                         String url = "http://localhost:8083/api/notifications/enviar";
 
@@ -69,6 +70,7 @@ public class SlaMonitorService {
                     } catch (Exception e) {
                         log.error("❌ Error al contactar al notification-service: {}", e.getMessage());
                     }
+                    // Aquí es donde tu sistema llamará al iam-service para mandar correos al gerente
                 } else if (minutosRestantes <= 60) {
                     log.warn("⚠️ [SLA EN RIESGO] El Ticket #{} está a punto de vencer. Faltan {} minutos.",
                             ticket.getId(), minutosRestantes);
@@ -76,6 +78,8 @@ public class SlaMonitorService {
             }
         }
     }
+
+    //
 
     // Regla de Negocio: Tiempos de atención por criticidad
     private int obtenerHorasSla(String prioridad) {

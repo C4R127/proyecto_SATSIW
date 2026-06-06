@@ -11,30 +11,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate; // <-- IMPORTAMOS LA CLASE AQUÍ
 
-import java.util.List;
-
 import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class TicketService {
 
     private final TicketRepository ticketRepository;
+    private final SucursalRepository sucursalRepository; // <-- AÑADIR ESTO
+    private final EquipoRepository equipoRepository;     // <-- AÑADIR ESTO
     private final RestTemplate restTemplate; // <-- AÑADIMOS EL COMUNICADOR AQUÍ
-    private final SucursalRepository sucursalRepository;
-    private final EquipoRepository equipoRepository;
 
     public Ticket crearTicket(TicketRequestDTO dto, String username) {
         Ticket nuevoTicket = new Ticket();
         nuevoTicket.setTitulo(dto.getTitulo());
         nuevoTicket.setDescripcion(dto.getDescripcion());
 
-
+        // 👇 AQUÍ ESTÁN LAS 3 LÍNEAS NUEVAS 👇
         nuevoTicket.setPrioridad(dto.getPrioridad());
         // 1. Buscamos el Equipo real en la base de datos
         Equipo equipo = equipoRepository.findById(dto.getEquipoId())
@@ -46,6 +45,7 @@ public class TicketService {
                 .orElseThrow(() -> new RuntimeException("Sucursal no encontrada con ID: " + dto.getSucursalId()));
         nuevoTicket.setSucursal(sucursal);
 
+        // 👆 ------------------------------ 👆
 
         nuevoTicket.setUsuarioUsername(username); // Asignamos el usuario autenticado de forma segura
 
@@ -60,11 +60,8 @@ public class TicketService {
         // Añadimos el evento a la lista del ticket
         nuevoTicket.getTimeline().add(eventoCreacion);
 
-
         // 1. Guardamos el ticket y lo almacenamos en una variable para tener su ID autogenerado
         Ticket ticketGuardado = ticketRepository.save(nuevoTicket);
-
-
 
         // 2. --- NOTIFICACIÓN AUTOMÁTICA AL MICROSERVICIO 4 ---
         java.util.Map<String, String> correoRequest = new java.util.HashMap<>();
@@ -89,7 +86,6 @@ public class TicketService {
     }
 
     // Método para cambiar el estado de un ticket
-    // Cambia la firma del método para recibir el username
     public Ticket actualizarEstado(Long id, String nuevoEstado, String username) {
         Ticket ticket = ticketRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Error: Ticket no encontrado con ID: " + id));
@@ -108,18 +104,6 @@ public class TicketService {
         ticket.getTimeline().add(evento);
 
         return ticketRepository.save(ticket);
-    }
-
-    // NUEVO: Método para actualizar el estado y el técnico de un ticket
-    public Ticket actualizarTicket(Long id, Ticket datosNuevos) {
-        return ticketRepository.findById(id).map(ticketExistente -> {
-            // Actualizamos solo los campos que cambian
-            ticketExistente.setEstado(datosNuevos.getEstado());
-            ticketExistente.setTecnicoAsignado(datosNuevos.getTecnicoAsignado());
-
-            // Guardamos los cambios en PostgreSQL
-            return ticketRepository.save(ticketExistente);
-        }).orElseThrow(() -> new RuntimeException("Ticket no encontrado con el ID: " + id));
     }
 
     public Ticket agregarComentario(Long id, String comentario, String username) {

@@ -43,20 +43,17 @@ public class Ticket {
     @Column(name = "usuario_username", nullable = false, length = 50)
     private String usuarioUsername;
 
-    @Column(name = "tecnico_asignado")
-    private String tecnicoAsignado;
-
     @Column(name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion;
-
-    @Column(name = "alerta_vencimiento_enviada")
-    private Boolean alertaVencimientoEnviada = false;
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<TicketTimeline> timeline = new ArrayList<>();
 
     @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Adjunto> adjuntos = new ArrayList<>();
+
+    @Column(name = "alerta_vencimiento_enviada")
+    private Boolean alertaVencimientoEnviada = false;
 
     // Esto se ejecuta automáticamente justo antes de guardar en la base de datos
     @PrePersist

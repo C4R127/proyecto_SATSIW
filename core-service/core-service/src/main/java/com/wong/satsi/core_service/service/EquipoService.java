@@ -15,8 +15,8 @@ public class EquipoService {
     public List<Equipo> obtenerTodosLosEquipos() {
         return equipoRepository.findAll();
     }
-/*
+
     public Equipo guardarEquipo(Equipo equipo) {
         return equipoRepository.save(equipo);
-    }*/
+    }
 }

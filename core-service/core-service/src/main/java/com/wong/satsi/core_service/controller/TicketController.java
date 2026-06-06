@@ -22,7 +22,6 @@ import java.nio.file.Paths;
 @RestController
 @RequestMapping("/api/tickets")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // RESTAURADO
 public class TicketController {
 
     private final TicketService ticketService;
@@ -59,12 +58,6 @@ public class TicketController {
         }
     }
 
-    // NUEVO: Endpoint PUT para recibir la actualización desde React
-    @PutMapping("/{id}")
-    public ResponseEntity<Ticket> actualizarTicket(@PathVariable Long id, @RequestBody Ticket ticket) {
-        return ResponseEntity.ok(ticketService.actualizarTicket(id, ticket));
-    }
-
     // 2. Añade este NUEVO endpoint para recibir los comentarios desde React:
     @PostMapping("/{id}/comments")
     public ResponseEntity<Ticket> agregarComentario(@PathVariable Long id, @RequestBody java.util.Map<String, String> payload, Authentication authentication) {
@@ -85,7 +78,6 @@ public class TicketController {
         return ResponseEntity.ok(ticketActualizado);
     }
 
-    // NUEVO: Endpoint para servir la imagen al navegador de React
     @GetMapping("/evidencia/{nombreArchivo:.+}")
     public ResponseEntity<Resource> verEvidencia(@PathVariable String nombreArchivo) {
         try {

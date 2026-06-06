@@ -13,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/usuarios")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*") // Permite peticiones directas desde React
 public class UsuarioController {
 
     private final UsuarioService usuarioService;

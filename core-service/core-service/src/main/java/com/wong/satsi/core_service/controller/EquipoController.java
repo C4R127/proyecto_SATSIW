@@ -11,6 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/equipos")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*") // Permite peticiones desde React
 public class EquipoController {
 
     private final EquipoService equipoService;
@@ -20,9 +21,9 @@ public class EquipoController {
         return ResponseEntity.ok(equipoService.obtenerTodosLosEquipos());
     }
 
-    /*
+    // NUEVO: Endpoint para guardar un equipo
     @PostMapping
     public ResponseEntity<Equipo> crearEquipo(@RequestBody Equipo equipo) {
         return ResponseEntity.ok(equipoService.guardarEquipo(equipo));
-    }*/
+    }
 }
