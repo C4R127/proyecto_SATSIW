@@ -73,6 +73,8 @@ function calcularEstadoSla(fechaCreacion: string, prioridad: string, estadoTicke
   return 'ok'; // Aún hay tiempo
 }
 
+
+
 // NUEVO: Función maestra que convierte cualquier ticket de Java a React
 function mapJavaToReactTicket(ticket: any): Ticket {
   return {
@@ -89,7 +91,6 @@ function mapJavaToReactTicket(ticket: any): Ticket {
     slaStatus: calcularEstadoSla(ticket.fechaCreacion, ticket.prioridad, ticket.estado), 
     slaHours: calcularHorasSla(ticket.prioridad),
 
-    // Tu código actual del timeline (Intacto)
     timeline: ticket.timeline ? ticket.timeline.map((t: any) => ({
       id: t.id?.toString(),
       type: t.tipoEvento,
@@ -99,9 +100,8 @@ function mapJavaToReactTicket(ticket: any): Ticket {
       user: t.usuario
     })) : [],
 
-    // --- NUEVA INTEGRACIÓN: Mapeo de las imágenes ---
+    // 👇 ESTO ES LO QUE LE FALTA A TU ARCHIVO ACTUAL 👇
     attachments: ticket.adjuntos && Array.isArray(ticket.adjuntos) ? ticket.adjuntos.map((a: any) => {
-      // Extraemos solo el nombre del archivo de la ruta larga
       const nombreUnico = a.rutaArchivo.replace(/^.*[\\\/]/, '');
       return {
           id: a.id?.toString(),
@@ -109,6 +109,7 @@ function mapJavaToReactTicket(ticket: any): Ticket {
           url: `http://localhost:8080/api/tickets/evidencia/${nombreUnico}`
       };
     }) : [],
+    // 👆 ASEGÚRATE DE QUE ESTÉ INCLUIDO 👆
   };
 }
 
@@ -190,3 +191,4 @@ export async function uploadTicketAttachment(id: string, file: File): Promise<Ti
   const data = await response.json();
   return mapJavaToReactTicket(data); // Reutilizamos tu excelente traductor
 }
+

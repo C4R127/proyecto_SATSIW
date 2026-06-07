@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Monitor, Wifi, CreditCard, HardDrive, Store, CheckCircle } from 'lucide-react';
 import { useTickets } from '../context/TicketContext';
 import { uploadTicketAttachment } from '../api/tickets';
-import { apiFetch } from '../api/client';
+import {apiFetch} from '../api/client';
 
 export default function CreateTicket() {
   const { create } = useTickets();

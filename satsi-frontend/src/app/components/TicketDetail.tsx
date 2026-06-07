@@ -140,6 +140,9 @@ export default function TicketDetail() {
     return <div className="p-8 text-[14px] text-[#757575]">Ticket no encontrado.</div>;
   }
 
+  // NUEVO: Imprimimos el ticket en la consola para ver qué trae adentro
+  console.log("Datos del ticket cargado:", ticket);
+
   return (
     <div className="p-8">
       {/* Breadcrumb */}

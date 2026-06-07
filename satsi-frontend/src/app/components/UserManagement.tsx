@@ -28,7 +28,8 @@ export default function UserManagement() {
 
   const fetchUsuarios = async () => {
     try {
-      const data = await apiFetch<Usuario[]>('http://localhost:8080/api/usuarios');
+      // Ajusta el puerto 8081 si tu iam-service corre en uno distinto
+      const data = await apiFetch<Usuario[]>('http://localhost:8081/api/usuarios');
       setUsuarios(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error cargando usuarios:", error);
@@ -45,7 +46,7 @@ export default function UserManagement() {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await apiFetch('http://localhost:8080/api/usuarios', {
+      await apiFetch('http://localhost:8081/api/usuarios', {
         method: 'POST',
         body: JSON.stringify(newUser)
       });

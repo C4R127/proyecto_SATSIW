@@ -21,7 +21,7 @@ export default function SlaMonitor() {
   // Se actualiza al entrar y recarga silenciosamente cada 60 segundos
   useEffect(() => {
     fetchTickets();
-    const interval = setInterval(fetchTickets, 60000);
+    const interval = setInterval(fetchTickets, 60000); 
     return () => clearInterval(interval);
   }, []);
 
@@ -56,7 +56,7 @@ export default function SlaMonitor() {
     const horasSla = getSlaHours(ticket.prioridad);
     const vencimiento = new Date(fechaCreacion.getTime() + horasSla * 60 * 60 * 1000);
     const ahora = new Date();
-
+    
     // Diferencia en horas
     const horasRestantes = (vencimiento.getTime() - ahora.getTime()) / (1000 * 60 * 60);
 
@@ -125,7 +125,7 @@ export default function SlaMonitor() {
       <div className="bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] overflow-hidden">
         <div className="p-4 border-b border-[#E0E0E0] bg-[#FAFAFA]">
           <h3 className="font-bold text-[#212121] flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-[#D32F2F]" />
+            <AlertCircle className="w-5 h-5 text-[#D32F2F]" /> 
             Tickets Críticos y en Riesgo
           </h3>
         </div>
@@ -151,19 +151,21 @@ export default function SlaMonitor() {
                   <td className="p-4 text-[13px] font-mono font-medium text-[#757575]">#{ticket.id}</td>
                   <td className="p-4 text-[14px] text-[#212121]">{ticket.titulo}</td>
                   <td className="p-4">
-                    <span className={`px-2 py-1 rounded text-[12px] font-medium ${ticket.prioridad?.toLowerCase().includes('critica') ? 'bg-[#FFEBEE] text-[#D32F2F]' :
-                        ticket.prioridad?.toLowerCase().includes('alta') ? 'bg-[#FFF3E0] text-[#E65100]' :
-                          'bg-gray-100 text-gray-700'
-                      }`}>
+                    <span className={`px-2 py-1 rounded text-[12px] font-medium ${
+                      ticket.prioridad?.toLowerCase().includes('critica') ? 'bg-[#FFEBEE] text-[#D32F2F]' :
+                      ticket.prioridad?.toLowerCase().includes('alta') ? 'bg-[#FFF3E0] text-[#E65100]' :
+                      'bg-gray-100 text-gray-700'
+                    }`}>
                       {ticket.prioridad}
                     </span>
                   </td>
                   <td className="p-4 text-[13px] font-medium">
                     <div className="flex items-center gap-2">
-                      <div className={`w-2 h-2 rounded-full ${ticket.estadoSla === 'breached' ? 'bg-[#D32F2F]' :
-                          ticket.estadoSla === 'warning' ? 'bg-[#F57F17]' :
-                            'bg-[#2E7D32]'
-                        }`}></div>
+                      <div className={`w-2 h-2 rounded-full ${
+                        ticket.estadoSla === 'breached' ? 'bg-[#D32F2F]' :
+                        ticket.estadoSla === 'warning' ? 'bg-[#F57F17]' :
+                        'bg-[#2E7D32]'
+                      }`}></div>
                       <span className={ticket.estadoSla === 'breached' ? 'text-[#D32F2F]' : 'text-[#212121]'}>
                         {formatTimeLeft(ticket.horasRestantes)}
                       </span>
