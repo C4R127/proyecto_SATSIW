@@ -42,6 +42,7 @@ public class TicketController {
     @GetMapping
     public ResponseEntity<List<Ticket>> listarTickets() {
         List<Ticket> tickets = ticketService.obtenerTodosLosTickets();
+        System.out.println(">>> Tickets encontrados en la BD por Java: " + tickets.size());
         return ResponseEntity.ok(tickets);
     }
 

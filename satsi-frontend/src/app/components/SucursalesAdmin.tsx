@@ -16,7 +16,7 @@ export default function SucursalesAdmin() {
 
   const fetchSucursales = async () => {
     try {
-      const data = await apiFetch<Sucursal[]>('http://localhost:8082/api/sucursales');
+      const data = await apiFetch<Sucursal[]>('/api/sucursales');
       setSucursales(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error al cargar sucursales:', error);
@@ -33,7 +33,7 @@ export default function SucursalesAdmin() {
 
     setLoading(true);
     try {
-      await apiFetch('http://localhost:8082/api/sucursales', {
+      await apiFetch('/api/sucursales', {
         method: 'POST',
         body: JSON.stringify({ nombre, direccion })
       });
