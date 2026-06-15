@@ -1,44 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { Monitor, Wifi, CreditCard, HardDrive, Store, CheckCircle } from 'lucide-react';
+import { Monitor, Wifi, CreditCard, HardDrive, Store, CheckCircle, Upload } from 'lucide-react';
 import { useTickets } from '../context/TicketContext';
 import { uploadTicketAttachment } from '../api/tickets';
-import {apiFetch} from '../api/client';
+import { apiFetch } from '../api/client';
 
 export default function CreateTicket() {
   const { create } = useTickets();
 
-  // Estados originales del formulario
+  // Estados del formulario
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('');
   const [evidencia, setEvidencia] = useState<File | null>(null);
   
-  // NUEVOS ESTADOS DINÁMICOS
+  // Estados dinámicos
   const [sucursales, setSucursales] = useState<any[]>([]);
-  const [equipos, setEquipos] = useState<any[]>([]);
   const [selectedSucursalId, setSelectedSucursalId] = useState<number | ''>('');
-  const [selectedEquipoId, setSelectedEquipoId] = useState<number | ''>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   const [submitted, setSubmitted] = useState(false);
   const [ticketNumber, setTicketNumber] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // EFECTO PARA CARGAR DATOS DESDE JAVA AL ABRIR LA PANTALLA
+  // Cargar sucursales desde el backend
   useEffect(() => {
     const cargarCatalogos = async () => {
       try {
-        // 1. Cargar Sucursales usando apiFetch (pasa el Token de seguridad)
         const dataSucursales = await apiFetch<any[]>('/api/sucursales');
         const listaSucursales = Array.isArray(dataSucursales) ? dataSucursales : [];
         setSucursales(listaSucursales);
         if (listaSucursales.length > 0) setSelectedSucursalId(listaSucursales[0].id);
-
-        // 2. Cargar Equipos usando apiFetch (pasa el Token de seguridad)
-        const dataEquipos = await apiFetch<any[]>('/api/equipos');
-        setEquipos(Array.isArray(dataEquipos) ? dataEquipos : []);
-
       } catch (error) {
-        console.error("Error cargando catálogos desde la base de datos:", error);
+        console.error("Error cargando sucursales desde la base de datos:", error);
       }
     };
 
@@ -52,40 +45,27 @@ export default function CreateTicket() {
     { value: 'critical', label: 'Crítica', bg: '#FFEBEE', text: '#C62828' },
   ];
 
-  // Función para darle un ícono dinámico a los equipos que vienen de Java
-  const getDeviceIcon = (tipo: string) => {
-    const safeTipo = String(tipo).toLowerCase();
-    if (safeTipo.includes('pos') || safeTipo.includes('caja')) return <CreditCard className="w-5 h-5" />;
-    if (safeTipo.includes('servidor')) return <HardDrive className="w-5 h-5" />;
-    if (safeTipo.includes('router') || safeTipo.includes('red')) return <Wifi className="w-5 h-5" />;
-    return <Monitor className="w-5 h-5" />;
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // 1. Creamos el ticket enviando los IDs seleccionados a la base de datos
       const ticket = await create({
         title,
         description,
-        equipoId: selectedEquipoId,
+        categoria: selectedCategory,
         priority: priority as 'low' | 'medium' | 'high' | 'critical',
         sucursalId: selectedSucursalId,
       } as any);
 
-      // 2. Subimos la foto si el usuario seleccionó una
       if (evidencia && ticket.id) {
-        console.log("🚀 Enviando foto a Java:", evidencia.name, "Peso:", evidencia.size);
         await uploadTicketAttachment(ticket.id.toString(), evidencia);
       }
 
-      // 3. Flujo de éxito
       setTicketNumber(ticket.id.toString());
       setSubmitted(true);
     } catch (error) {
-      console.error("Error al crear el ticket o subir la evidencia:", error);
+      console.error("Error al crear el ticket:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -94,7 +74,7 @@ export default function CreateTicket() {
   const handleCreateAnother = () => {
     setTitle('');
     setDescription('');
-    setSelectedEquipoId('');
+    setSelectedCategory('');
     setPriority('');
     if (sucursales.length > 0) setSelectedSucursalId(sucursales[0].id);
     setEvidencia(null);
@@ -104,13 +84,13 @@ export default function CreateTicket() {
 
   if (submitted) {
     return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-8">
-        <div className="w-full max-w-[720px] bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] p-12 text-center">
+      <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4 sm:p-8">
+        <div className="w-full max-w-[720px] bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] p-6 sm:p-12 text-center">
           <div className="mb-6">
-            <div className="w-20 h-20 rounded-full bg-[#E8F5E9] flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-12 h-12 text-[#2E7D32]" />
+            <div className="w-16 h-20 sm:w-20 sm:h-20 rounded-full bg-[#E8F5E9] flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-[#2E7D32]" />
             </div>
-            <h2 className="text-[24px] font-semibold text-[#212121] mb-2">
+            <h2 className="text-[20px] sm:text-[24px] font-semibold text-[#212121] mb-2">
               ¡Ticket creado exitosamente!
             </h2>
             <p className="text-[14px] text-[#757575] mb-1">
@@ -122,7 +102,7 @@ export default function CreateTicket() {
           </div>
           <button
             onClick={handleCreateAnother}
-            className="px-6 py-3 bg-[#D32F2F] text-white rounded-md font-medium text-[14px] hover:bg-[#B71C1C] transition-all"
+            className="w-full sm:w-auto px-6 py-3 bg-[#D32F2F] text-white rounded-md font-medium text-[14px] hover:bg-[#B71C1C] transition-all"
           >
             Crear otro ticket
           </button>
@@ -132,20 +112,20 @@ export default function CreateTicket() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-8">
-      <div className="w-full max-w-[720px] bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] p-8">
+    <div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4 sm:p-8">
+      <div className="w-full max-w-[720px] bg-white rounded-lg shadow-[0_2px_8px_rgba(0,0,0,0.08)] p-5 sm:p-8">
         <div className="mb-6">
-          <h2 className="text-[24px] font-semibold text-[#212121] mb-2">
+          <h2 className="text-[20px] sm:text-[24px] font-semibold text-[#212121] mb-2">
             Reportar Nueva Incidencia
           </h2>
-          <p className="text-[14px] text-[#757575]">
-            Completa el formulario para reportar tu problema. Serás atendido lo antes posible.
+          <p className="text-[13px] sm:text-[14px] text-[#757575]">
+            Completa el formulario para reportar tu problema desde tu estación o dispositivo móvil.
           </p>
         </div>
 
         <form onSubmit={handleSubmit}>
           {/* Título */}
-          <div className="mb-6">
+          <div className="mb-5">
             <label className="block text-[14px] font-medium text-[#212121] mb-2">
               Título del problema
             </label>
@@ -160,7 +140,7 @@ export default function CreateTicket() {
           </div>
 
           {/* Descripción */}
-          <div className="mb-6">
+          <div className="mb-5">
             <label className="block text-[14px] font-medium text-[#212121] mb-2">
               Descripción detallada
             </label>
@@ -175,20 +155,18 @@ export default function CreateTicket() {
           </div>
 
           {/* Evidencia */}
-          <div className="mb-6">
+          <div className="mb-5">
             <label className="block text-[14px] font-medium text-[#212121] mb-2">
               Evidencia del error (Opcional)
             </label>
             <div className="flex items-center justify-center w-full">
-              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-[#E0E0E0] border-dashed rounded-lg cursor-pointer bg-[#FAFAFA] hover:bg-[#F5F5F5] transition-colors">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg className="w-8 h-8 mb-3 text-[#757575]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  <p className="mb-2 text-sm text-[#757575]">
-                    <span className="font-semibold text-[#D32F2F]">Haz clic para subir</span> o arrastra tu foto aquí
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-[#E0E0E0] border-dashed rounded-lg cursor-pointer bg-[#FAFAFA] hover:bg-[#F5F5F5] transition-colors p-4 text-center">
+                <div className="flex flex-col items-center justify-center">
+                  <Upload className="w-8 h-8 mb-2 text-[#757575]" />
+                  <p className="mb-1 text-xs sm:text-sm text-[#757575]">
+                    <span className="font-semibold text-[#D32F2F]">Presiona para tomar foto</span> o subir archivo
                   </p>
-                  <p className="text-xs text-[#9E9E9E]">PNG, JPG o PDF (MAX. 5MB)</p>
+                  <p className="text-[11px] text-[#9E9E9E]">PNG, JPG o PDF (MAX. 5MB)</p>
                 </div>
                 <input
                   type="file"
@@ -199,50 +177,58 @@ export default function CreateTicket() {
               </label>
             </div>
             {evidencia && (
-              <p className="mt-2 text-sm text-[#2E7D32] font-medium">
-                ✓ Archivo seleccionado: {evidencia.name}
+              <p className="mt-2 text-sm text-[#2E7D32] font-medium break-all">
+                ✓ Seleccionado: {evidencia.name}
               </p>
             )}
           </div>
 
-          {/* Categoría / Equipos (DINÁMICO) */}
-          <div className="mb-6">
+          {/* Categoría Adaptable */}
+          <div className="mb-5">
             <label className="block text-[14px] font-medium text-[#212121] mb-2">
-              Equipo a reportar
+              Categoría
             </label>
-            <div className="grid grid-cols-1 gap-2">
-              {equipos.length === 0 && <p className="text-[13px] text-gray-500">Cargando equipos desde la base de datos...</p>}
-              {equipos.map((equipo) => (
-                <button
-                  key={equipo.id}
-                  type="button"
-                  onClick={() => setSelectedEquipoId(equipo.id)}
-                  className={`flex items-center gap-3 px-4 py-3 border rounded-md text-left text-[14px] transition-all ${
-                    selectedEquipoId === equipo.id
-                      ? 'border-[#D32F2F] bg-[#FFEBEE] text-[#D32F2F]'
-                      : 'border-[#E0E0E0] text-[#757575] hover:border-[#D32F2F]'
-                  }`}
-                >
-                  {getDeviceIcon(equipo.tipo)}
-                  <span>{equipo.tipo} - {equipo.marca} <span className="text-[#9E9E9E] ml-1">(Inv: {equipo.codigoInventario})</span></span>
-                </button>
-              ))}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+              {[
+                { id: 'HARDWARE_CAJA', label: 'Hardware de Caja', icon: CreditCard },
+                { id: 'REDES_CONECTIVIDAD', label: 'Redes / Conectividad', icon: Wifi },
+                { id: 'COMPUTO_ESTACIONES', label: 'Terminal POS', icon: Monitor },
+                { id: 'SOFTWARE_SISTEMAS', label: 'Software / Sistema', icon: HardDrive },
+                { id: 'OTRAS', label: 'Otros', icon: Store }
+              ].map((cat) => {
+                const Icon = cat.icon;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`flex items-center gap-3 px-4 py-3 border rounded-md text-left text-[14px] transition-all ${
+                      selectedCategory === cat.id
+                        ? 'border-[#D32F2F] bg-[#FFEBEE] text-[#D32F2F]'
+                        : 'border-[#E0E0E0] text-[#757575] hover:border-[#D32F2F]'
+                    }`}
+                  >
+                    <Icon className={`w-5 h-5 flex-shrink-0 ${selectedCategory === cat.id ? 'text-[#D32F2F]' : 'text-[#757575]'}`} />
+                    <span className="font-medium">{cat.label}</span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
-          {/* Prioridad */}
+          {/* Prioridad Adaptable */}
           <div className="mb-6">
             <label className="block text-[14px] font-medium text-[#212121] mb-2">
               Nivel de Prioridad
             </label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {priorities.map((p) => (
                 <button
                   key={p.value}
                   type="button"
                   onClick={() => setPriority(p.value)}
-                  className={`px-4 py-2 rounded-[20px] text-[12px] font-medium transition-all ${
-                    priority === p.value ? 'ring-2 ring-offset-2' : 'opacity-60 hover:opacity-100'
+                  className={`w-full py-2.5 rounded-[20px] text-[12px] font-medium transition-all text-center ${
+                    priority === p.value ? 'ring-2 ring-offset-2' : 'opacity-75 hover:opacity-100'
                   }`}
                   style={{
                     backgroundColor: p.bg,
@@ -256,7 +242,7 @@ export default function CreateTicket() {
             </div>
           </div>
 
-          {/* Tienda / Sucursal (DINÁMICO) */}
+          {/* Tienda / Sucursal */}
           <div className="mb-6">
             <label className="flex items-center gap-2 text-[14px] font-medium text-[#212121] mb-2">
               <Store className="w-4 h-4 text-[#757575]" />
@@ -277,21 +263,21 @@ export default function CreateTicket() {
             </select>
           </div>
 
-          {/* Botones */}
-          <div className="flex gap-3">
-            <button
-              type="submit"
-              className="flex-1 py-3 px-4 bg-[#D32F2F] text-white rounded-md font-medium text-[14px] hover:bg-[#B71C1C] transition-all disabled:bg-[#BDBDBD] disabled:cursor-not-allowed"
-              disabled={!title || !description || !selectedEquipoId || !priority || !selectedSucursalId || isSubmitting}
-            >
-              {isSubmitting ? 'Creando...' : 'Crear Ticket'}
-            </button>
+          {/* Botones de Acción Adaptables */}
+          <div className="flex flex-col-reverse sm:flex-row gap-3">
             <button
               type="button"
               onClick={handleCreateAnother}
-              className="px-6 py-3 bg-white border border-[#D32F2F] text-[#D32F2F] rounded-md font-medium text-[14px] hover:bg-[#FFEBEE] transition-all"
+              className="w-full sm:w-auto sm:px-6 py-3 bg-white border border-[#D32F2F] text-[#D32F2F] rounded-md font-medium text-[14px] hover:bg-[#FFEBEE] transition-all text-center"
             >
               Cancelar
+            </button>
+            <button
+              type="submit"
+              className="w-full sm:flex-1 py-3 px-4 bg-[#D32F2F] text-white rounded-md font-medium text-[14px] hover:bg-[#B71C1C] transition-all disabled:bg-[#BDBDBD] disabled:cursor-not-allowed text-center"
+              disabled={!title || !description || !selectedCategory || !priority || !selectedSucursalId || isSubmitting}
+            >
+              {isSubmitting ? 'Creando...' : 'Crear Ticket'}
             </button>
           </div>
         </form>

@@ -87,7 +87,7 @@ function mapJavaToReactTicket(ticket: any): Ticket {
     id: ticket.id?.toString(),
     title: ticket.titulo,
     description: ticket.descripcion,
-    category: ticket.categoria,
+    category: ticket.categoria || 'OTRAS',
     priority: mapPriority(ticket.prioridad),
     status: mapStatus(ticket.estado),
     store: ticket.tienda || 'Wong Plaza Norte - Lima',
@@ -134,7 +134,7 @@ export async function createTicket(payload: any): Promise<Ticket> {
   const backendPayload = {
     titulo: payload.title,
     descripcion: payload.description,
-    equipoId: payload.equipoId,       
+    categoria: payload.categoria || payload.category,
     prioridad: mapPriorityToJava(payload.priority), 
     sucursalId: payload.sucursalId    
   };

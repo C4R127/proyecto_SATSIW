@@ -33,12 +33,18 @@ public class TicketService {
         nuevoTicket.setTitulo(dto.getTitulo());
         nuevoTicket.setDescripcion(dto.getDescripcion());
 
-        // 👇 AQUÍ ESTÁN LAS 3 LÍNEAS NUEVAS 👇
+        // Guardamos la prioridad y la NUEVA CATEGORÍA
         nuevoTicket.setPrioridad(dto.getPrioridad());
-        // 1. Buscamos el Equipo real en la base de datos
-        Equipo equipo = equipoRepository.findById(dto.getEquipoId())
-                .orElseThrow(() -> new RuntimeException("Equipo no encontrado con ID: " + dto.getEquipoId()));
-        nuevoTicket.setEquipo(equipo);
+        nuevoTicket.setCategoria(dto.getCategoria());
+
+        // 1. Buscamos el Equipo solo si el Frontend nos envió un ID (ahora es opcional)
+        if (dto.getEquipoId() != null) {
+            Equipo equipo = equipoRepository.findById(dto.getEquipoId())
+                    .orElseThrow(() -> new RuntimeException("Equipo no encontrado con ID: " + dto.getEquipoId()));
+            nuevoTicket.setEquipo(equipo);
+        } else {
+            nuevoTicket.setEquipo(null); // Si no envían equipo, lo dejamos vacío de forma segura
+        }
 
         // 2. Buscamos la Sucursal real en la base de datos
         Sucursal sucursal = sucursalRepository.findById(dto.getSucursalId())

@@ -26,8 +26,11 @@ public class Ticket {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String descripcion;
 
+    @Column(name = "categoria")
+    private String categoria;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "equipo_id", nullable = false)
+    @JoinColumn(name = "equipo_id")
     private Equipo equipo;
 
     @Column(nullable = false, length = 20)

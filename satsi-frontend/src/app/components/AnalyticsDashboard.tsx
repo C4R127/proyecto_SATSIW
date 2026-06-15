@@ -12,12 +12,35 @@ export default function AnalyticsDashboard() {
   type CategoryDatum = { name: string; value: number };
   type StatusDatum = { name: string; value: number; color: string };
 
-  const categoryData = useMemo<CategoryDatum[]>(() => {
+  // AnalyticsDashboard.tsx (Reemplazo para el grouping logic)
+
+ const categoryData = useMemo<CategoryDatum[]>(() => {
     const counts = tickets.reduce<Record<string, number>>((acc, ticket: TicketType) => {
-      acc[ticket.category] = (acc[ticket.category] || 0) + 1;
+      // 1. Rescatamos la categoría enviada desde Java (probamos ambos nombres por seguridad)
+      const rawCategory = ticket.category || (ticket as any).categoria;
+
+      // 2. Por defecto, si un ticket viejo no tiene categoría, irá a "Otras"
+      let friendlyName = 'Otras';
+
+      // 3. Traducimos la clave de la base de datos al nombre bonito para tu gráfico
+      if (rawCategory) {
+        const cleanCat = String(rawCategory).toUpperCase().trim();
+        switch (cleanCat) {
+          case 'HARDWARE_CAJA': friendlyName = 'Hardware de Caja'; break;
+          case 'REDES_CONECTIVIDAD': friendlyName = 'Redes'; break;
+          case 'COMPUTO_ESTACIONES': friendlyName = 'POS'; break;
+          case 'SOFTWARE_SISTEMAS': friendlyName = 'Software'; break;
+          case 'OTRAS': friendlyName = 'Otras'; break;
+          default: friendlyName = 'Otras'; break;
+        }
+      }
+
+      // Agrupamos contando +1 en la categoría correspondiente
+      acc[friendlyName] = (acc[friendlyName] || 0) + 1;
       return acc;
     }, {});
 
+    // Convertimos el objeto en el arreglo que Recharts necesita para dibujar las barras
     return Object.entries(counts).map(([name, value]) => ({ name, value }));
   }, [tickets]);
 
