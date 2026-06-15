@@ -97,29 +97,38 @@ export default function TicketDetail() {
   const safePriority = String(rawPriority).toLowerCase().trim();
   const priorityStyle = priorityColors[safePriority as keyof typeof priorityColors] || priorityColors.medium;
 
-  // NUEVO: Función maestra de actualización con Auto-asignación a Java
+  // NUEVO: Función para actualizar el estado del ticket en Java
+  // NUEVO: Función para actualizar el estado del ticket en Java
   const handleConfirmStatus = async () => {
-    if (!ticket || selectedStatus === rawStatus) return;
-
+    if (!ticket) return;
     try {
-      // Regla de Auto-asignación: Si soy técnico o sysadmin, el sistema toma mi nombre automáticamente
-      const nombreTecnico = (user?.role === 'technician' || user?.role === 'sysadmin')
-        ? user.name
-        : (ticket as any).tecnicoAsignado;
+      // 1. Sacamos tu "Pase VIP" de Técnico con la llave correcta
+      const token = localStorage.getItem('jwt_token'); 
+      
+      // 2. Traducimos lo que diga tu lista desplegable a lo que Java entiende
+      let estadoJava = 'ABIERTO';
+      // 👇 AQUÍ ESTÁ LA CORRECCIÓN: Usamos selectedStatus en lugar del undefined newStatus
+      const estadoSeguro = selectedStatus.toLowerCase(); 
+      if (estadoSeguro.includes('progreso') || estadoSeguro.includes('in-progress')) estadoJava = 'EN_PROGRESO';
+      else if (estadoSeguro.includes('resuelto') || estadoSeguro.includes('resolved')) estadoJava = 'RESUELTO';
+      else if (estadoSeguro.includes('cerrado') || estadoSeguro.includes('closed')) estadoJava = 'CERRADO';
 
-      const payload = {
-        ...ticket,
-        estado: selectedStatus,
-        tecnicoAsignado: nombreTecnico
-      };
-
-      // Disparamos la actualización real a PostgreSQL
-      const updated = await apiFetch<Ticket>(`/api/tickets/${ticket.id}`, {
+      // 3. Enviamos el método PUT a la fuerza, inyectando el token seguro
+      const response = await fetch(`http://localhost:8080/api/tickets/${ticket.id}/estado?estado=${estadoJava}`, {
         method: 'PUT',
-        body: JSON.stringify(payload)
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
-      setTicket(updated);
+      if (!response.ok) {
+        console.error("❌ Java rechazó el cambio. Código:", response.status);
+        throw new Error('Error al actualizar');
+      }
+
+      // 4. ¡Éxito! Recargamos la pantalla para ver el nuevo estado
+      window.location.reload();
+      
     } catch (error) {
       console.error("Error al actualizar el estado en Java:", error);
     }

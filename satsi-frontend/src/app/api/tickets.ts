@@ -157,9 +157,24 @@ export async function updateTicketStatus(id: string, status: TicketStatus): Prom
     default: estadoJava = 'ABIERTO'; break;
   }
 
-  const data = await apiFetch<any>(`/api/tickets/${id}/estado?estado=${estadoJava}`, {
+  // 1. Obtenemos el token directamente
+  const token = localStorage.getItem('jwt_token');
+
+  // 2. Hacemos el fetch a la fuerza, sin intermediarios
+  const response = await fetch(`http://localhost:8080/api/tickets/${id}/estado?estado=${estadoJava}`, {
     method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}` // Inyectamos el pase VIP
+    }
   });
+
+  // 3. Capturamos el error exacto si falla
+  if (!response.ok) {
+    console.error(`❌ El backend rechazó la petición con código: ${response.status}`);
+    throw new Error('No se pudo actualizar el estado');
+  }
+
+  const data = await response.json();
   return mapJavaToReactTicket(data); 
 }
 

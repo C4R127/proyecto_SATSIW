@@ -21,12 +21,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                // 👇 ESTA ES LA LLAVE MAESTRA PARA PERMITIR LOS MÉTODOS 'PUT' 👇
+                .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 // Como usamos microservicios y JWT, no guardamos sesiones en memoria
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // PERMITIMOS QUE REACT CARGUE LAS IMÁGENES:
                         .requestMatchers(HttpMethod.GET, "/api/tickets/evidencia/**").permitAll()
                         .anyRequest().authenticated()
                 );
