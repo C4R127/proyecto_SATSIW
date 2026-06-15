@@ -24,7 +24,7 @@ public class SlaMonitorService {
     private final RestTemplate restTemplate;
 
     // La expresión cron "0 * * * * *" significa: Ejecutar en el segundo 0 de cada minuto.
-    @Scheduled(cron = "0 * * * * *")
+    //@Scheduled(cron = "0 * * * * *")
     public void monitorearTiemposDeAtencion() {
         log.info("🔍 [CRON JOB] Iniciando revisión automática de SLA...");
 

@@ -85,6 +85,11 @@ public class TicketService {
         return ticketRepository.findAll();
     }
 
+    public Ticket obtenerTicketPorId(Long id) {
+        return ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado"));
+    }
+
     // Método para cambiar el estado de un ticket
     public Ticket actualizarEstado(Long id, String nuevoEstado, String username) {
         Ticket ticket = ticketRepository.findById(id)

@@ -28,13 +28,13 @@ export default function CreateTicket() {
     const cargarCatalogos = async () => {
       try {
         // 1. Cargar Sucursales usando apiFetch (pasa el Token de seguridad)
-        const dataSucursales = await apiFetch<any[]>('http://localhost:8082/api/sucursales');
+        const dataSucursales = await apiFetch<any[]>('/api/sucursales');
         const listaSucursales = Array.isArray(dataSucursales) ? dataSucursales : [];
         setSucursales(listaSucursales);
         if (listaSucursales.length > 0) setSelectedSucursalId(listaSucursales[0].id);
 
         // 2. Cargar Equipos usando apiFetch (pasa el Token de seguridad)
-        const dataEquipos = await apiFetch<any[]>('http://localhost:8082/api/equipos');
+        const dataEquipos = await apiFetch<any[]>('/api/equipos');
         setEquipos(Array.isArray(dataEquipos) ? dataEquipos : []);
 
       } catch (error) {
@@ -77,6 +77,7 @@ export default function CreateTicket() {
 
       // 2. Subimos la foto si el usuario seleccionó una
       if (evidencia && ticket.id) {
+        console.log("🚀 Enviando foto a Java:", evidencia.name, "Peso:", evidencia.size);
         await uploadTicketAttachment(ticket.id.toString(), evidencia);
       }
 

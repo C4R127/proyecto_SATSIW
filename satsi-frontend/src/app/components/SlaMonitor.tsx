@@ -9,7 +9,7 @@ export default function SlaMonitor() {
   // 1. Descargamos los tickets reales de tu Java
   const fetchTickets = async () => {
     try {
-      const data = await apiFetch<any[]>('http://localhost:8082/api/tickets');
+      const data = await apiFetch<any[]>('/api/tickets');
       setTickets(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error cargando tickets para SLA:', error);

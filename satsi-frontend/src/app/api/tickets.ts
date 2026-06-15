@@ -40,6 +40,16 @@ function mapPriority(prioridadJava: string): 'low' | 'medium' | 'high' | 'critic
   }
 }
 
+function mapPriorityToJava(prioridadReact: string): string {
+    switch (prioridadReact) {
+        case 'low': return 'BAJA';
+        case 'medium': return 'MEDIA';
+        case 'high': return 'ALTA';
+        case 'critical': return 'CRITICA';
+        default: return 'BAJA';
+    }
+}
+
 // Calcula cuántas horas le corresponden según prioridad
 function calcularHorasSla(prioridad: string): number {
   switch (prioridad?.toLowerCase()) {
@@ -52,7 +62,6 @@ function calcularHorasSla(prioridad: string): number {
 }
 
 // Determina el color del semáforo (ok = Verde, warning = Amarillo, breached = Rojo)
-// Fíjate que aquí cambiamos 'breached' por 'error' en el tipo de retorno
 function calcularEstadoSla(fechaCreacion: string, prioridad: string, estadoTicket: string): 'ok' | 'warning' | 'expired' {
   if (!fechaCreacion) return 'ok';
   
@@ -67,13 +76,10 @@ function calcularEstadoSla(fechaCreacion: string, prioridad: string, estadoTicke
   const faltanMilisegundos = limite.getTime() - ahora.getTime();
   const faltanMinutos = faltanMilisegundos / (1000 * 60);
 
-  // Y aquí también devolvemos 'error' en lugar de 'breached'
   if (faltanMinutos < 0) return 'expired'; // SLA Vencido
   if (faltanMinutos <= 60) return 'warning'; // Falta 1 hora o menos
   return 'ok'; // Aún hay tiempo
 }
-
-
 
 // NUEVO: Función maestra que convierte cualquier ticket de Java a React
 function mapJavaToReactTicket(ticket: any): Ticket {
@@ -100,7 +106,6 @@ function mapJavaToReactTicket(ticket: any): Ticket {
       user: t.usuario
     })) : [],
 
-    // 👇 ESTO ES LO QUE LE FALTA A TU ARCHIVO ACTUAL 👇
     attachments: ticket.adjuntos && Array.isArray(ticket.adjuntos) ? ticket.adjuntos.map((a: any) => {
       const nombreUnico = a.rutaArchivo.replace(/^.*[\\\/]/, '');
       return {
@@ -109,7 +114,6 @@ function mapJavaToReactTicket(ticket: any): Ticket {
           url: `http://localhost:8080/api/tickets/evidencia/${nombreUnico}`
       };
     }) : [],
-    // 👆 ASEGÚRATE DE QUE ESTÉ INCLUIDO 👆
   };
 }
 
@@ -117,23 +121,22 @@ function mapJavaToReactTicket(ticket: any): Ticket {
 
 export async function getTickets(): Promise<Ticket[]> {
   const data = await apiFetch<any[]>('/api/tickets');
-  // Usamos la función maestra para cada ticket de la lista
   return data.map(mapJavaToReactTicket);
 }
 
 export async function getTicketById(id: string): Promise<Ticket> {
   const data = await apiFetch<any>(`/api/tickets/${id}`);
+  console.log("🔍 Datos crudos desde Java:", data);
   return mapJavaToReactTicket(data);
 }
 
 export async function createTicket(payload: any): Promise<Ticket> {
-  // Traducimos el payload de React al DTO exacto que espera Java
   const backendPayload = {
     titulo: payload.title,
     descripcion: payload.description,
-    equipoId: payload.equipoId,       // NUEVO: Enviamos el ID numérico del equipo
-    prioridad: payload.priority,
-    sucursalId: payload.sucursalId    // NUEVO: Enviamos el ID numérico de la sucursal
+    equipoId: payload.equipoId,       
+    prioridad: mapPriorityToJava(payload.priority), 
+    sucursalId: payload.sucursalId    
   };
 
   const data = await apiFetch<any>('/api/tickets', {
@@ -157,7 +160,7 @@ export async function updateTicketStatus(id: string, status: TicketStatus): Prom
   const data = await apiFetch<any>(`/api/tickets/${id}/estado?estado=${estadoJava}`, {
     method: 'PUT',
   });
-  return mapJavaToReactTicket(data); // Pasamos la respuesta por el traductor
+  return mapJavaToReactTicket(data); 
 }
 
 export async function addTicketComment(id: string, message: string): Promise<Ticket> {
@@ -170,16 +173,16 @@ export async function addTicketComment(id: string, message: string): Promise<Tic
 
 // Añadir al final de tickets.ts
 export async function uploadTicketAttachment(id: string, file: File): Promise<Ticket> {
-  const token = localStorage.getItem('jwt_token');
+  // ✅ AQUÍ ESTÁ EL CAMBIO CRUCIAL: 'jwt_token'
+  const token = localStorage.getItem('jwt_token'); 
+
   const formData = new FormData();
   formData.append('archivo', file);
 
   const response = await fetch(`http://localhost:8080/api/tickets/${id}/adjuntos`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${token}`
-      // IMPORTANTE: Cuando usamos FormData, NO enviamos el 'Content-Type'. 
-      // El navegador lo calcula automáticamente para poder enviar archivos.
+      'Authorization': `Bearer ${token}` 
     },
     body: formData
   });
@@ -189,6 +192,5 @@ export async function uploadTicketAttachment(id: string, file: File): Promise<Ti
   }
   
   const data = await response.json();
-  return mapJavaToReactTicket(data); // Reutilizamos tu excelente traductor
+  return mapJavaToReactTicket(data);
 }
-

@@ -39,7 +39,7 @@ export default function Inventory() {
   const fetchEquipos = async () => {
     try {
       // Petición directa al microservicio con el Token JWT inyectado
-      const data = await apiFetch<Equipo[]>('http://localhost:8082/api/equipos');
+      const data = await apiFetch<Equipo[]>('/api/equipos');
       setEquipos(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error("Error cargando inventario:", error);
@@ -50,7 +50,7 @@ export default function Inventory() {
 
   const fetchSucursales = async () => {
     try {
-      const data = await apiFetch<Sucursal[]>('http://localhost:8082/api/sucursales');
+      const data = await apiFetch<Sucursal[]>('/api/sucursales');
       const list = Array.isArray(data) ? data : [];
       setSucursales(list);
       if(list.length > 0) {
@@ -77,7 +77,7 @@ export default function Inventory() {
         sucursal: { id: Number(newEquipo.sucursalId) } // Relacionamos con la tabla Sucursales
       };
 
-      await apiFetch('http://localhost:8082/api/equipos', {
+      await apiFetch('/api/equipos', {
         method: 'POST',
         body: JSON.stringify(payload)
       });

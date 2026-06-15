@@ -46,6 +46,13 @@ public class TicketController {
         return ResponseEntity.ok(tickets);
     }
 
+    // Endpoint para buscar un solo ticket por su ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Ticket> obtenerTicketPorId(@PathVariable Long id) {
+        Ticket ticket = ticketService.obtenerTicketPorId(id);
+        return ResponseEntity.ok(ticket);
+    }
+
     // 1. Modifica el PutMapping existente para extraer el usuario:
     @PutMapping("/{id}/estado")
     public ResponseEntity<Ticket> actualizarEstado(@PathVariable Long id, @RequestParam String estado, Authentication authentication) {
