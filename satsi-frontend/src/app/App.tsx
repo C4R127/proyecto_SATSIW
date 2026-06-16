@@ -33,7 +33,6 @@ function RequireAuth({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // 👇 VAMOS A COMENTAR ESTO TEMPORALMENTE PARA ROMPER EL BUCLE 👇
   /*
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {
     return <Navigate to="/" replace />;
@@ -62,7 +61,6 @@ function HomeRedirect() {
     return <Navigate to="/kanban" replace />;
   }
 
-  // Por defecto (Personal de Tienda)
   return <Navigate to="/tickets" replace />;
 }
 

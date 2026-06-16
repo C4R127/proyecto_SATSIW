@@ -8,11 +8,10 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.util.Date;
 
-@Component // Esta anotación le dice a Spring Boot: "Crea esta herramienta y tenla lista para usarla"
+@Component
 public class JwtUtil {
 
-    // 1. La firma digital secreta. (¡Debe ser larga y compleja!)
-    // En el mundo real, esto no se pone en el código, sino en variables de entorno seguras.
+    // 1. La firma digital secreta.
     private final String SECRET_KEY = "MiSuperClaveSecretaParaElSistemaDeTicketsSatsi2026";
 
     // 2. Tiempo de vida del token (Ejemplo: 1 hora en milisegundos)
@@ -23,7 +22,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    // 3. El método que "Fabrica" el Pase VIP
+    // 3. El método que "Genera" el Pase VIP (token JWT) para un usuario específico, con su rol incluido
     public String generarToken(String username, String rol) {
         return Jwts.builder()
                 .setSubject(username) // A quién le pertenece el pase

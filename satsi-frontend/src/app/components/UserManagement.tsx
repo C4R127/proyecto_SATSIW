@@ -25,10 +25,9 @@ export default function UserManagement() {
     password: '',
     nombreRol: 'store' // Valor por defecto
   });
-
+  // Función para cargar los usuarios desde el backend Java
   const fetchUsuarios = async () => {
     try {
-      // Ajusta el puerto 8081 si tu iam-service corre en uno distinto
       const data = await apiFetch<Usuario[]>('http://localhost:8081/api/usuarios');
       setUsuarios(Array.isArray(data) ? data : []);
     } catch (error) {
@@ -42,6 +41,7 @@ export default function UserManagement() {
     fetchUsuarios();
   }, []);
 
+  // Función para manejar la creación de un nuevo usuario
   const handleCrearUsuario = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -62,6 +62,7 @@ export default function UserManagement() {
     }
   };
 
+  // Función para mostrar el badge de rol con colores
   const getRoleBadge = (rol: string) => {
     switch (rol) {
       case 'sysadmin': return <span className="px-3 py-1 bg-[#424242] text-white rounded-full text-[12px] font-medium">SysAdmin</span>;

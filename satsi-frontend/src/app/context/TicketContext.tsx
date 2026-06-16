@@ -32,7 +32,6 @@ export function TicketProvider({ children }: { children: ReactNode }) {
       setTickets(data);
     } catch (error) {
       console.error("Error al cargar tickets (esto es normal si el backend aún no autoriza):", error);
-      // No hacemos setTickets si falla, para evitar romper el renderizado
     } finally {
       setIsLoading(false);
     }
@@ -87,6 +86,7 @@ export function TicketProvider({ children }: { children: ReactNode }) {
 
   return <TicketContext.Provider value={value}>{children}</TicketContext.Provider>;
 }
+
 
 export function useTickets() {
   const context = useContext(TicketContext);

@@ -23,13 +23,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 1. El guardia busca la cabecera "Authorization" en la petición
+        // 1. Lee el header "Authorization" de la petición HTTP (donde se espera que venga el token JWT)
         final String authorizationHeader = request.getHeader("Authorization");
 
         String username = null;
         String jwt = null;
 
-        // 2. Verifica si el usuario trajo un token y si empieza con "Bearer " (el estándar JWT)
+        // 2. Si el header tiene un token que empieza con "Bearer ", entonces lo procesamos
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7); // Quitamos la palabra "Bearer " para dejar solo el token
             try {
@@ -45,9 +45,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             // 4. El guardia valida el token para confirmar que no sea falso
             if (jwtUtil.validarToken(jwt)) {
 
-                // 5. Le dice a Spring Security: "Todo en orden, este usuario tiene permiso de pasar"
+                // 5. Si el token es válido, el guardia le da permiso al usuario para pasar, creando un objeto de autenticación con su username y roles.
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        username, null, new ArrayList<>()); // (Aquí irían los roles más adelante)
+                        username, null, new ArrayList<>());
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }

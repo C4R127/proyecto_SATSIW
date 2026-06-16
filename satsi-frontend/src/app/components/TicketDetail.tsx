@@ -15,7 +15,7 @@ import {
 import { useTickets } from '../context/TicketContext';
 import type { Ticket, TicketStatus, TicketTimelineEvent } from '../types';
 import { useAuth } from '../context/AuthContext';
-import { apiFetch } from '../api/client'; // NUEVO: Importamos apiFetch para la conexión directa
+import { apiFetch } from '../api/client'; 
 
 export default function TicketDetail() {
   const { ticketId } = useParams();
@@ -97,8 +97,7 @@ export default function TicketDetail() {
   const safePriority = String(rawPriority).toLowerCase().trim();
   const priorityStyle = priorityColors[safePriority as keyof typeof priorityColors] || priorityColors.medium;
 
-  // NUEVO: Función para actualizar el estado del ticket en Java
-  // NUEVO: Función para actualizar el estado del ticket en Java
+  // Función para actualizar el estado del ticket en Java
   const handleConfirmStatus = async () => {
     if (!ticket) return;
     try {
@@ -149,7 +148,7 @@ export default function TicketDetail() {
     return <div className="p-8 text-[14px] text-[#757575]">Ticket no encontrado.</div>;
   }
 
-  // NUEVO: Imprimimos el ticket en la consola para ver qué trae adentro
+  // Imprimimos el ticket en la consola para ver qué trae adentro
   console.log("Datos del ticket cargado:", ticket);
 
   return (

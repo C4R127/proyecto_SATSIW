@@ -1,5 +1,7 @@
-const BASE_URL = 'http://localhost:8080'; // La dirección de tu API Gateway
+const BASE_URL = 'http://localhost:8080'; // La dirección de API Gateway
 
+
+//
 export async function apiFetch<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
     // 1. Intentamos obtener el token guardado (generalmente se guarda al hacer login)
     const token = localStorage.getItem('jwt_token');

@@ -47,7 +47,7 @@ public class AuthController {
         // 1. Primero intentamos buscar por Username
         Optional<Usuario> usuarioOpt = usuarioRepository.findByUsername(dto.getUsername());
 
-        // 2. NUEVO: Si no lo encuentra por Username, intentamos buscarlo por Email
+        // 2. Si no lo encuentra por Username, intentamos buscarlo por Email
         if (usuarioOpt.isEmpty()) {
             usuarioOpt = usuarioRepository.findByEmail(dto.getUsername());
         }
@@ -64,7 +64,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error: Contraseña incorrecta.");
         }
 
-        // 5. Si todo está correcto, ordenamos a JwtUtil fabricar el Pase VIP
+        // 5. Si todo está correcto, ordenamos a JwtUtil fabricar el token con el username y el rol del usuario
         String token = jwtUtil.generarToken(usuario.getUsername(), usuario.getRol().getNombre());
 
         // 6. Devolvemos el token al cliente

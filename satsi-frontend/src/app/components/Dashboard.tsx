@@ -4,12 +4,15 @@ import { Ticket, Clock, CheckCircle, AlertTriangle } from 'lucide-react';
 import { useTickets } from '../context/TicketContext';
 import type { Ticket as TicketType } from '../types';
 
+
+// Función principal del Dashboard, que muestra estadísticas y tickets recientes
 export default function Dashboard() {
+  // Obtenemos los tickets y el estado de carga desde el contexto
   const { tickets, isLoading } = useTickets();
   const navigate = useNavigate();
 
   type Stat = { icon: typeof Ticket; label: string; value: string; color: string };
-
+  // Calcula las horas de SLA según la prioridad del ticket
   const stats = useMemo<Stat[]>(() => {
     const inProgress = tickets.filter((ticket: TicketType) => ticket.status === 'in-progress').length;
     const resolved = tickets.filter((ticket: TicketType) => ticket.status === 'resolved').length;

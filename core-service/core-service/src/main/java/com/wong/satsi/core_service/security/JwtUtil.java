@@ -9,7 +9,7 @@ import java.security.Key;
 @Component
 public class JwtUtil {
 
-    // ¡La misma firma secreta del iam-service!
+    //
     private final String SECRET_KEY = "MiSuperClaveSecretaParaElSistemaDeTicketsSatsi2026";
 
     private Key getSigningKey() {

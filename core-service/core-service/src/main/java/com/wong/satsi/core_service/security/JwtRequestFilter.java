@@ -27,7 +27,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         final String authorizationHeader = request.getHeader("Authorization");
 
-        // 👇 AÑADE ESTOS TRES MENSAJES (EL MICRÓFONO) 👇
         System.out.println("=== NUEVA PETICION AL CORE-SERVICE ===");
         System.out.println("1. Ruta solicitada: " + request.getRequestURI());
         System.out.println("2. Token recibido por Java: " + authorizationHeader);

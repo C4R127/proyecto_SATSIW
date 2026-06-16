@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface RolRepository extends JpaRepository<Rol, Long> {
 
-    // Spring Boot escribirá el SQL por nosotros con solo nombrar bien el método:
+    // Este método nos servirá para asignar el rol al usuario al momento de registrarlo
     Optional<Rol> findByNombre(String nombre);
 }

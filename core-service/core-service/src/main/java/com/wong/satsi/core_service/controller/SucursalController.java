@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/sucursales")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "*") // Permite que React (que está en otro puerto) pueda llamar a este servicio
+
 public class SucursalController {
 
     private final SucursalService sucursalService;

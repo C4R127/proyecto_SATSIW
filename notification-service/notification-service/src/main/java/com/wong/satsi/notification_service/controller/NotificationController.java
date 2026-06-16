@@ -14,17 +14,13 @@ public class NotificationController {
     private JavaMailSender mailSender;
 
     @PostMapping("/enviar")
+
     public String enviarCorreo(@RequestBody CorreoRequest request) {
         SimpleMailMessage mensaje = new SimpleMailMessage();
 
-        // El correo al que queremos avisar
         mensaje.setTo(request.getDestinatario());
-        // El asunto del correo
         mensaje.setSubject(request.getAsunto());
-        // El cuerpo del correo
         mensaje.setText(request.getMensaje());
-
-        // La acción mágica que dispara el email
         mailSender.send(mensaje);
 
         return "Alerta enviada con éxito a: " + request.getDestinatario();

@@ -81,7 +81,7 @@ function calcularEstadoSla(fechaCreacion: string, prioridad: string, estadoTicke
   return 'ok'; // Aún hay tiempo
 }
 
-// NUEVO: Función maestra que convierte cualquier ticket de Java a React
+// Función maestra que convierte cualquier ticket de Java a React
 function mapJavaToReactTicket(ticket: any): Ticket {
   return {
     id: ticket.id?.toString(),
@@ -188,9 +188,10 @@ export async function addTicketComment(id: string, message: string): Promise<Tic
 
 // Añadir al final de tickets.ts
 export async function uploadTicketAttachment(id: string, file: File): Promise<Ticket> {
-  // ✅ AQUÍ ESTÁ EL CAMBIO CRUCIAL: 'jwt_token'
+  // 1. Obtenemos el token directamente
   const token = localStorage.getItem('jwt_token'); 
 
+  // 2. Preparamos el FormData con el archivo
   const formData = new FormData();
   formData.append('archivo', file);
 

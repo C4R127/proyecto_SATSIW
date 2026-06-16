@@ -14,7 +14,7 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
-    private final PasswordEncoder passwordEncoder; // Inyectamos la herramienta que acabamos de crear
+    private final PasswordEncoder passwordEncoder;
 
     public Usuario registrarUsuario(Usuario nuevoUsuario, String nombreRol) {
 
@@ -31,14 +31,14 @@ public class UsuarioService {
 
         nuevoUsuario.setRol(rol);
 
-        // ¡Aquí ocurre la magia de la encriptación!
+        // Encriptamos la contraseña antes de guardar el usuario
         String contrasenaEncriptada = passwordEncoder.encode(nuevoUsuario.getPassword());
         nuevoUsuario.setPassword(contrasenaEncriptada);
 
         return usuarioRepository.save(nuevoUsuario);
     }
 
-        // NUEVO: Método para listar todos los usuarios
+        // Método para listar todos los usuarios
         public java.util.List<Usuario> obtenerTodosLosUsuarios() {
             return usuarioRepository.findAll();
         }

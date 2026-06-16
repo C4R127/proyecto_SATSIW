@@ -37,7 +37,7 @@ public class Usuario {
     @JoinColumn(name = "rol_id", nullable = false)
     private Rol rol;
 
-    // Esto asigna la fecha actual automáticamente justo antes de guardar en la BD
+    // Asignacion de la fecha actual automática justo antes de guardar en la BD
     @PrePersist
     protected void onCreate() {
         this.fechaCreacion = LocalDateTime.now();

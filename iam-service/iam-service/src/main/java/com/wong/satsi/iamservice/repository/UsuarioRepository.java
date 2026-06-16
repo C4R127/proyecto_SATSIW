@@ -9,12 +9,12 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    // Necesitaremos esto para el login:
+    // Estos métodos nos servirán para validar el login y para buscar usuarios por su correo o nombre de usuario:
     Optional<Usuario> findByUsername(String username);
 
     Optional<Usuario> findByEmail(String email);
 
-    // Necesitaremos esto para validar que no se repitan correos al registrar:
+    // Estos métodos nos servirán para validar el registro y evitar duplicados:
     boolean existsByEmail(String email);
 
     boolean existsByUsername(String username);

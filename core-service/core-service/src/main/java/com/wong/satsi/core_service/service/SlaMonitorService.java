@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SlaMonitorService {
 
-    // Usamos el Logger para imprimir mensajes profesionales en la consola
+    // Usamos el Logger para imprimir mensajes en la consola
     private static final Logger log = LoggerFactory.getLogger(SlaMonitorService.class);
     private final TicketRepository ticketRepository;
 
@@ -62,17 +62,16 @@ public class SlaMonitorService {
                         restTemplate.postForEntity(url, request, String.class);
                         log.info("📧 Alerta enviada al gerente exitosamente para el ticket {}", ticket.getId());
 
-                        // --- NUEVO: MARCAMOS EL TICKET COMO AVISADO Y GUARDAMOS ---
                         ticket.setAlertaVencimientoEnviada(true);
                         ticketRepository.save(ticket);
-                        // ----------------------------------------------------------
+
 
                     } catch (Exception e) {
-                        log.error("❌ Error al contactar al notification-service: {}", e.getMessage());
+                        log.error("Error al contactar al notification-service: {}", e.getMessage());
                     }
                     // Aquí es donde tu sistema llamará al iam-service para mandar correos al gerente
                 } else if (minutosRestantes <= 60) {
-                    log.warn("⚠️ [SLA EN RIESGO] El Ticket #{} está a punto de vencer. Faltan {} minutos.",
+                    log.warn("[SLA EN RIESGO] El Ticket #{} está a punto de vencer. Faltan {} minutos.",
                             ticket.getId(), minutosRestantes);
                 }
             }

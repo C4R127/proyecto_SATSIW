@@ -21,7 +21,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // 👇 ESTA ES LA LLAVE MAESTRA PARA PERMITIR LOS MÉTODOS 'PUT' 👇
+                // Deshabilitamos CORS y CSRF porque nuestro frontend y backend están separados, y manejamos la seguridad con JWT
                 .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
                 // Como usamos microservicios y JWT, no guardamos sesiones en memoria

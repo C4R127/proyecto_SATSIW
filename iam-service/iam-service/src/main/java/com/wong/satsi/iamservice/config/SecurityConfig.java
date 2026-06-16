@@ -36,8 +36,6 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll() // Login y Registro son públicos
                         .anyRequest().authenticated() // CUALQUIER otra URL requerirá el Token JWT
                 );
-
-        // Colocamos a nuestro Guardia (JwtRequestFilter) en la puerta principal
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

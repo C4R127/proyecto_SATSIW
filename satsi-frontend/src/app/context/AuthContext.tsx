@@ -12,7 +12,7 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-// NUEVO: Función maestra para decodificar y leer el contenido del Pase VIP (JWT)
+// Función para decodificar el JWT y extraer su payload, que contiene la información real del usuario asignada por Java
 function parseJwt(token: string) {
   try {
     const base64Url = token.split('.')[1];
@@ -43,6 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return null;
   });
 
+  // Función para manejar el login, que ahora se encarga de guardar el token en localStorage y extraer la información real del usuario desde el JWT
   const login = async (email: string, password: string) => {
     const response: any = await loginRequest({ email, password });
     
@@ -50,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const tokenString = typeof response === 'string' ? response : response.token;
     localStorage.setItem('jwt_token', tokenString);
 
-    // 2. ¡ADIÓS ADIVINANZAS! Abrimos el token para extraer los datos 100% reales
+    // 2. Decodificamos el token para extraer el nombre de usuario real y el rol.
     const decodedToken = parseJwt(tokenString);
     
     // En JWT, el nombre de usuario siempre viaja en la propiedad "sub" (Subject)
@@ -65,7 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         role: realRole as UserRole
     };
 
-    // 3. Guardamos la verdad absoluta en memoria
+    // 3. Se guarda el rol y el nombre real en localStorage para mantener la sesión.
     localStorage.setItem('user_role', realRole);
     localStorage.setItem('user_name', realUsername);
 
@@ -74,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = () => {
-    // 4. Limpiamos TODO el rastro al salir
+    // 4. Se eliminan los datos de la sesión al hacer logout
     localStorage.removeItem('jwt_token');
     localStorage.removeItem('user_role');
     localStorage.removeItem('user_name');

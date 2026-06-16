@@ -32,7 +32,7 @@ public class Equipo {
     private String modelo;
 
     @Column(nullable = false, length = 30)
-    private String estado; // Ej: "OPERATIVO", "MANTENIMIENTO", "DADO DE BAJA"
+    private String estado; // Ej: "OPERATIVO", "MANTENIMIENTO", Etc
 
     @Column(name = "fecha_registro", updatable = false)
     private LocalDateTime fechaRegistro;

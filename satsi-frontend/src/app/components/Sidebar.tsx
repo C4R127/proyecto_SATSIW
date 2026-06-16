@@ -6,7 +6,7 @@ export default function Sidebar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   
-  // Menú estrictamente basado en el Diagrama de Casos de Uso UML
+  // Rutas del menú con sus respectivos roles permitidos
   const menuItems = [
     { path: '/tickets', label: 'Mis Tickets', icon: Ticket, roles: ['store'] }, // CU-03
     { path: '/kanban', label: 'Tablero Kanban', icon: Columns, roles: ['technician'] }, // CU-05

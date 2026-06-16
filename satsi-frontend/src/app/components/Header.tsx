@@ -5,6 +5,8 @@ interface HeaderProps {
   currentTitle?: string;
 }
 
+
+// Componente de cabecera que se muestra en todas las vistas, con título dinámico, buscador y avatar
 export default function Header({ currentTitle }: HeaderProps) {
   const { user } = useAuth();
 

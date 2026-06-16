@@ -11,7 +11,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/equipos")
 @RequiredArgsConstructor
-//@CrossOrigin(origins = "*") // Permite peticiones desde React
+
 public class EquipoController {
 
     private final EquipoService equipoService;

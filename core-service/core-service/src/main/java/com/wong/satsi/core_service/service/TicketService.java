@@ -51,11 +51,10 @@ public class TicketService {
                 .orElseThrow(() -> new RuntimeException("Sucursal no encontrada con ID: " + dto.getSucursalId()));
         nuevoTicket.setSucursal(sucursal);
 
-        // 👆 ------------------------------ 👆
 
         nuevoTicket.setUsuarioUsername(username); // Asignamos el usuario autenticado de forma segura
 
-        // --- NUEVO: REGISTRAR EL EVENTO DE CREACIÓN EN EL TIMELINE ---
+        // --- REGISTRAR EL EVENTO DE CREACIÓN EN EL TIMELINE ---
         com.wong.satsi.core_service.model.TicketTimeline eventoCreacion = new com.wong.satsi.core_service.model.TicketTimeline();
         eventoCreacion.setTipoEvento("created");
         eventoCreacion.setTitulo("Ticket Creado");

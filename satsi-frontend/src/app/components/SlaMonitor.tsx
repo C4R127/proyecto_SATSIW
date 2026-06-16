@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { CheckCircle, Clock, AlertTriangle, AlertCircle } from 'lucide-react';
 import { apiFetch } from '../api/client';
 
+// Componente de Monitoreo de SLA, que muestra el estado de los tickets en tiempo real
 export default function SlaMonitor() {
   const [tickets, setTickets] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 1. Descargamos los tickets reales de tu Java
+  // Descargamos los tickets reales de tu Java
   const fetchTickets = async () => {
     try {
       const data = await apiFetch<any[]>('/api/tickets');
@@ -25,13 +26,13 @@ export default function SlaMonitor() {
     return () => clearInterval(interval);
   }, []);
 
-  // 2. Lógica matemática de SLA (Tiempos máximos de atención)
+  // Lógica matemática de SLA (Tiempos máximos de atención)
   const getSlaHours = (prioridad: string) => {
     const p = String(prioridad || '').toLowerCase();
     if (p.includes('critica') || p.includes('critical')) return 2;
     if (p.includes('alta') || p.includes('high')) return 8;
     if (p.includes('media') || p.includes('medium')) return 24;
-    return 72; // Baja
+    return 72;
   };
 
   const formatTimeLeft = (hours: number) => {
@@ -40,7 +41,7 @@ export default function SlaMonitor() {
     return `${Math.round(hours)}h restantes`;
   };
 
-  // 3. Procesamos los datos para las métricas
+  // Procesamos los datos para las métricas
   const activeTickets = tickets.filter(t => {
     const s = String(t.estado || '').toLowerCase();
     return s !== 'cerrado' && s !== 'resuelto';

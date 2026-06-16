@@ -21,6 +21,7 @@ export interface Equipo {
   sucursal: Sucursal;
 }
 
+// Componente principal de Inventario, que muestra el listado de equipos y permite agregar nuevos activos
 export default function Inventory() {
   const [equipos, setEquipos] = useState<Equipo[]>([]);
   const [sucursales, setSucursales] = useState<Sucursal[]>([]);
@@ -36,6 +37,7 @@ export default function Inventory() {
     sucursalId: ''
   });
 
+  // Función para cargar el inventario de equipos desde el backend
   const fetchEquipos = async () => {
     try {
       // Petición directa al microservicio con el Token JWT inyectado
@@ -48,6 +50,7 @@ export default function Inventory() {
     }
   };
 
+  // Función para cargar las sucursales, necesaria para el formulario de nuevo equipo
   const fetchSucursales = async () => {
     try {
       const data = await apiFetch<Sucursal[]>('/api/sucursales');
@@ -66,6 +69,7 @@ export default function Inventory() {
     fetchSucursales();
   }, []);
 
+  // Función para manejar la creación de un nuevo equipo, enviando los datos al backend
   const handleCrearEquipo = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -184,7 +188,7 @@ export default function Inventory() {
 
       
 
-      {/* MODAL PARA NUEVO EQUIPO (¡El código perdido ha vuelto!) */}
+      {/* MODAL PARA NUEVO EQUIPO */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">

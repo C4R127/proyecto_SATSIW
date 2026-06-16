@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/notification-service/src/main/java/com/wong/satsi/notification_service/NotificationServiceApplication.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/notification-service/src/main/java/com/wong/satsi/notification_service/NotificationServiceApplication.java" />
+              <option name="originalContent" value="package com.wong.satsi.notification_service;&#10;&#10;import org.springframework.boot.SpringApplication;&#10;import org.springframework.boot.autoconfigure.SpringBootApplication;&#10;&#10;@SpringBootApplication&#10;public class NotificationServiceApplication {&#10;&#10;&#9;public static void main(String[] args) {&#10;&#9;&#9;SpringApplication.run(NotificationServiceApplication.class, args);&#10;&#9;}&#10;&#10;}&#10;" />
+              <option name="updatedContent" value="package com.wong.satsi.notification_service;&#10;&#10;import org.springframework.boot.SpringApplication;&#10;import org.springframework.boot.autoconfigure.SpringBootApplication;&#10;&#10;@SpringBootApplication&#10;public class NotificationServiceApplication {&#10;&#10;&#9;/**&#10;&#9; * Punto de entrada de la aplicación Spring Boot.&#10;&#9; * Inicializa el contexto de Spring y arranca el servidor embebido&#10;&#9; * para exponer los endpoints definidos en el proyecto.&#10;&#9; */&#10;&#9;public static void main(String[] args) {&#10;&#9;&#9;SpringApplication.run(NotificationServiceApplication.class, args);&#10;&#9;}&#10;&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
