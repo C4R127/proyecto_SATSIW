@@ -1,63 +1,215 @@
-# SATSI - Sistema de Atención de Soporte TI 🛠️📊
+# SATSI - Sistema de Atención de Soporte TI 🛠️
 
-SATSI es una plataforma integral de HelpDesk diseñada para la gestión, seguimiento y resolución de incidencias de soporte técnico en entornos corporativos y sucursales retail. Construido bajo una arquitectura de microservicios y un enfoque *Mobile-First*, el sistema optimiza los tiempos de respuesta (SLA) y proporciona métricas analíticas en tiempo real.
+Sistema HelpDesk desarrollado para la gestión, seguimiento y resolución de incidencias de soporte técnico en entornos corporativos y sucursales retail.
 
-## 🚀 Características Principales
+Implementa una arquitectura basada en microservicios, autenticación JWT, consultas REST y GraphQL, además de un enfoque Mobile-First para optimizar la experiencia de los usuarios en punto de venta.
 
-* **Reporte de Incidencias Móvil (Mobile-First):** Interfaz adaptativa que permite a los operarios (cajeros) reportar fallos directamente desde sus dispositivos móviles en el punto de venta.
-* **Gestión de Evidencias:** Soporte para carga de archivos multimedia (imágenes, PDFs) adjuntos a cada ticket de soporte mediante almacenamiento local.
-* **Dashboard Gerencial:** Panel analítico en tiempo real con gráficos interactivos (Recharts) para el monitoreo de SLAs, estado global de tickets e incidencias por categoría.
-* **Seguridad Robusta:** Autenticación y autorización basada en Tokens JWT, con segregación de roles (Tienda, Técnico, Gerencia).
-* **Arquitectura Escalable:** Separación de dominios de datos (IAM y Core) garantizando la independencia y resiliencia de los servicios, con soporte para consultas vía REST y GraphQL.
+---
+
+## 🚀 Características
+
+- 📱 Reporte de incidencias desde dispositivos móviles.
+- 📎 Gestión de evidencias mediante carga de imágenes y documentos PDF.
+- 📊 Dashboard gerencial con métricas y monitoreo de SLA en tiempo real.
+- 🔐 Seguridad basada en JWT y control de acceso por roles.
+- 🏗️ Arquitectura de microservicios escalable y desacoplada.
+- 🔄 Integración mediante APIs REST y GraphQL.
+
+---
 
 ## 💻 Stack Tecnológico
 
-**Frontend (Cliente Web)**
-* React.js (TypeScript)
-* Vite (Bundler)
-* Tailwind CSS (Estilos UI)
-* Lucide-React (Iconografía)
-* Recharts (Visualización de datos)
+### Frontend
 
-**Backend (Microservicios)**
-* Java 24 (OpenJDK)
-* Spring Boot v3.5.14
-* Spring Security & JJWT v0.11.5
-* Spring Data JPA / Hibernate Core v6.6.49.Final
-* GraphQL y API REST
+- React.js
+- TypeScript
+- Vite
+- Tailwind CSS
+- Lucide React
+- Recharts
 
-**Base de Datos & Herramientas**
-* PostgreSQL v15.18
-* Postman (API Testing)
-* DBeaver (Gestión de BD)
+### Backend
 
-## 🗄️ Estructura de Base de Datos
+- Java 24
+- Spring Boot 3.5.14
+- Spring Security
+- JJWT 0.11.5
+- Spring Data JPA
+- Hibernate 6.6.49.Final
+- REST API
+- GraphQL
 
-El sistema implementa dos bases de datos lógicas independientes:
-1. `satsi_iam_db`: Gestión de identidades, credenciales de usuarios y roles de acceso.
-2. `satsi_core_db`: Núcleo operativo del negocio (Tickets, Sucursales, Equipos de inventario, Línea de tiempo y Evidencias).
+### Base de Datos y Herramientas
+
+- PostgreSQL 15
+- Maven
+- Postman
+- DBeaver
+
+---
+
+## 🗄️ Arquitectura de Base de Datos
+
+El sistema utiliza dos bases de datos independientes:
+
+| Base de Datos | Descripción |
+|--------------|-------------|
+| `satsi_iam_db` | Gestión de usuarios, credenciales y roles |
+| `satsi_core_db` | Gestión de tickets, sucursales, inventario, evidencias y trazabilidad |
+
+---
 
 ## ⚙️ Requisitos Previos
 
-Asegúrate de tener instalado lo siguiente en tu entorno local:
-* [Java JDK 24](https://jdk.java.net/24/)
-* [Node.js](https://nodejs.org/) (v18 o superior)
-* [PostgreSQL](https://www.postgresql.org/download/) (v15+)
-* [Maven](https://maven.apache.org/)
+Instalar previamente:
 
-## 🛠️ Instalación y Configuración Local
+- Java JDK 24
+- Node.js 18+
+- PostgreSQL 15+
+- Maven 3.9+
 
-### 1. Configuración de Base de Datos
-1. Abre tu gestor de base de datos (ej. DBeaver o pgAdmin).
-2. Crea dos bases de datos vacías: `satsi_iam_db` y `satsi_core_db`.
-3. Ejecuta los scripts de respaldo (`satsi_iam_db_backup.sql` y `satsi_core_db_backup.sql`) ubicados en la carpeta `/database` del repositorio para restaurar las tablas y datos semilla.
+---
 
-### 2. Configuración del Backend (Spring Boot)
-1. Navega a los directorios de los microservicios (`core-service` e `iam-service`).
-2. Configura tus credenciales de PostgreSQL en los archivos `application.yml` o `application.properties`:
-   ```yaml
-   spring:
-     datasource:
-       url: jdbc:postgresql://localhost:5432/satsi_core_db
-       username: tu_usuario
-       password: tu_password
+## 🛠️ Instalación
+
+### 1. Configurar PostgreSQL
+
+Crear las siguientes bases de datos:
+
+```sql
+CREATE DATABASE satsi_iam_db;
+CREATE DATABASE satsi_core_db;
+```
+
+Restaurar los scripts ubicados en:
+
+```text
+/database/satsi_iam_db_backup.sql
+/database/satsi_core_db_backup.sql
+```
+
+### 2. Configurar Backend
+
+Ingresar a cada microservicio:
+
+```bash
+cd iam-service
+```
+
+```bash
+cd core-service
+```
+
+Configurar las credenciales de conexión en el archivo `application.yml`:
+
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/satsi_core_db
+    username: tu_usuario
+    password: tu_password
+```
+
+Compilar y ejecutar:
+
+```bash
+mvn clean install
+mvn spring-boot:run
+```
+
+Puertos utilizados:
+
+| Servicio | Puerto |
+|-----------|---------|
+| Config Server | 8888 |
+| IAM Service | 8082 |
+| Core Service | 8080 |
+
+### 3. Configurar Frontend
+
+Ingresar al proyecto frontend:
+
+```bash
+cd frontend
+```
+
+Instalar dependencias:
+
+```bash
+npm install
+```
+
+Ejecutar en modo desarrollo:
+
+```bash
+npm run dev
+```
+
+Aplicación disponible en:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## 🧪 Testing
+
+### Pruebas Unitarias
+
+```bash
+mvn test
+```
+
+Tecnologías utilizadas:
+
+- JUnit 5
+- Mockito
+
+### Pruebas de Integración
+
+- Colección Postman incluida en el repositorio.
+- Validación de autenticación JWT.
+- Validación de creación y seguimiento de tickets.
+
+### Calidad de Software
+
+- Evaluación basada en ISO/IEC 25010.
+- Auditoría de accesibilidad mediante Google Lighthouse.
+- Puntajes superiores al 90% en accesibilidad.
+
+---
+
+## 📂 Estructura General
+
+```text
+SATSI
+│
+├── frontend
+├── iam-service
+├── core-service
+├── database
+│   ├── satsi_iam_db_backup.sql
+│   └── satsi_core_db_backup.sql
+│
+└── README.md
+```
+
+---
+
+## 📈 Funcionalidades Principales
+
+- Gestión de tickets de soporte.
+- Administración de usuarios y roles.
+- Seguimiento del ciclo de vida de incidencias.
+- Gestión de evidencias adjuntas.
+- Dashboard de indicadores y SLA.
+- Inventario de equipos por sucursal.
+
+---
+
+## 📝 Autores
+
+Proyecto Integrador de Ingeniería de Software.
+
+Desarrollado como solución para la gestión centralizada de soporte técnico y monitoreo de incidencias.
